@@ -59,7 +59,7 @@ GitHub Pages sert généralement les sites publiés via `github.io` en HTTPS. Un
 - Cache du service worker renouvelé afin de favoriser la prise en compte de la mise à jour.
 
 
-## Version 14 — Navigation tactile
+## Version 15 — Navigation tactile
 
 - Balayage horizontal sur les pages : droite vers gauche pour passer à l’onglet suivant ; gauche vers droite pour revenir à l’onglet précédent.
 - Les champs, boutons, liens, fenêtres modales et graphiques conservent leurs interactions habituelles.

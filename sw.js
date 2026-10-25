@@ -1,1 +1,37 @@
-const CACHE='id4-lld-cache-v16';const FILES=['./','./index.html','./manifest.webmanifest','./icon-512.png','./apple-touch-icon.png'];self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES))));self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k))))));self.addEventListener('fetch',e=>{if(e.request.method!=='GET')return;e.respondWith(caches.match(e.request).then(cached=>cached||fetch(e.request).then(r=>{const copy=r.clone();caches.open(CACHE).then(c=>c.put(e.request,copy));return r}).catch(()=>caches.match('./index.html'))))});
+const CACHE='id4-lld-cache-v17';
+const FILES=['./','./index.html','./manifest.webmanifest','./icon-512.png','./apple-touch-icon.png'];
+self.addEventListener('install',event=>event.waitUntil((async()=>{
+  const cache=await caches.open(CACHE);
+  await cache.addAll(FILES);
+  await self.skipWaiting();
+})()));
+self.addEventListener('activate',event=>event.waitUntil((async()=>{
+  const keys=await caches.keys();
+  await Promise.all(keys.filter(key=>key!==CACHE).map(key=>caches.delete(key)));
+  await self.clients.claim();
+})()));
+self.addEventListener('fetch',event=>{
+  const request=event.request;
+  if(request.method!=='GET')return;
+  const url=new URL(request.url);
+  const isHtml=request.mode==='navigate'||url.pathname.endsWith('/index.html');
+  if(isHtml){
+    event.respondWith((async()=>{
+      const cache=await caches.open(CACHE);
+      try{
+        const response=await fetch(request,{cache:'no-cache'});
+        if(response&&response.ok){
+          try{await cache.put(request,response.clone());}catch(_){ }
+        }
+        return response;
+      }catch(_){
+        return (await cache.match(request))||(await cache.match('./index.html'))||(await cache.match('./'));
+      }
+    })());
+    return;
+  }
+  event.respondWith(caches.match(request).then(cached=>cached||fetch(request).then(response=>{
+    if(response&&response.ok){const copy=response.clone();caches.open(CACHE).then(cache=>cache.put(request,copy)).catch(()=>{});}
+    return response;
+  }).catch(()=>caches.match('./index.html'))));
+});

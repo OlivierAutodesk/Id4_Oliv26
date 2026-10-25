@@ -1067,36 +1067,59 @@ function getStartOdometer(){return Math.max(0,Number(data.startOdometer??0)||0)}
 function load(){try{const x=JSON.parse(localStorage.getItem(STORE)||'{}');data={mileage:Array.isArray(x.mileage)?x.mileage:[],expenses:Array.isArray(x.expenses)?x.expenses:[],startOdometer:Math.max(0,Number.isFinite(Number(x.startOdometer??0))?Number(x.startOdometer??0):0)}}catch(e){data={mileage:[],expenses:[],startOdometer:0}}}
 function save(){localStorage.setItem(STORE,JSON.stringify(data));render()}
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.page===id));document.body.classList.toggle('charge-active',id==='chargePage');window.scrollTo({top:0,behavior:'auto'});render()}
-// Navigation par balayage tactile : gauche vers droite = onglet précédent,
-// droite vers gauche = onglet suivant. Les contrôles et graphes gardent leurs gestes propres.
+// Navigation tactile renforcée : balayage horizontal entre tous les onglets.
+// La détection est globale pour fonctionner aussi depuis l'en-tête et la barre d'onglets.
 (function setupSwipeNavigation(){
  const pages=['home','mileage','expenses','chargePage','graphs','history'];
- const app=document.querySelector('.app');
- if(!app)return;
+ const ignoredSelector='input,select,textarea,option,[contenteditable="true"],.chart,#chargeChart,.modal,[role="slider"],.slider-block';
  let start=null;
- const ignoredSelector='input,select,textarea,button,a,summary,details,.tabs,.chart,#chargeChart,.modal,[role="slider"],[contenteditable="true"]';
- app.addEventListener('touchstart',e=>{
-   if(e.touches.length!==1){start=null;return}
-   const page=e.target.closest('.page.active');
-   if(!page||e.target.closest(ignoredSelector)||document.querySelector('.modal.open')){start=null;return}
+ function activePage(){return document.querySelector('.page.active')}
+ function allowedStart(target){
+   if(!target||!target.closest)return null;
+   const current=activePage();
+   if(!current)return null;
+   // Les champs, curseurs, graphes et fenêtres modales conservent leurs gestes propres.
+   if(target.closest(ignoredSelector))return null;
+   // Autorise le geste dans le contenu, l'en-tête et la barre d'onglets.
+   if(!target.closest('.app,.tabs'))return null;
+   return current.id;
+ }
+ document.addEventListener('touchstart',e=>{
+   if(e.touches.length!==1){start=null;return;}
+   const pageId=allowedStart(e.target);
+   if(!pageId){start=null;return;}
    const t=e.touches[0];
-   start={x:t.clientX,y:t.clientY,page:page.id,id:t.identifier,time:Date.now()};
- },{passive:true});
- app.addEventListener('touchend',e=>{
-   if(!start||e.changedTouches.length!==1){start=null;return}
-   const t=e.changedTouches[0];
-   if(t.identifier!==start.id){start=null;return}
+   start={x:t.clientX,y:t.clientY,id:t.identifier,pageId,horizontal:false,vertical:false};
+ },{capture:true,passive:true});
+ document.addEventListener('touchmove',e=>{
+   if(!start)return;
+   if(e.touches.length!==1){start=null;return;}
+   const t=e.touches[0];
+   if(t.identifier!==start.id){start=null;return;}
    const dx=t.clientX-start.x,dy=t.clientY-start.y;
-   const originPage=start.page;start=null;
-   // Ignore taps, vertical scrolling and gestures started on controls.
-   if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.25)return;
-   const current=document.querySelector('.page.active');
-   if(!current||current.id!==originPage)return;
-   const index=pages.indexOf(originPage);
+   // Verrouille les déplacements horizontaux pour éviter qu'un swipe déclenche un clic.
+   if(Math.abs(dx)>12&&Math.abs(dx)>Math.abs(dy)*1.15){
+     start.horizontal=true;
+     if(e.cancelable)e.preventDefault();
+   }else if(Math.abs(dy)>14&&Math.abs(dy)>Math.abs(dx)*1.15){
+     start.vertical=true;
+   }
+ },{capture:true,passive:false});
+ document.addEventListener('touchend',e=>{
+   if(!start)return;
+   const origin=start;start=null;
+   if(e.changedTouches.length!==1)return;
+   const t=e.changedTouches[0];
+   if(t.identifier!==origin.id||origin.vertical)return;
+   const dx=t.clientX-origin.x,dy=t.clientY-origin.y;
+   if(Math.abs(dx)<50||Math.abs(dx)<Math.abs(dy)*1.2)return;
+   const current=activePage();
+   if(!current||current.id!==origin.pageId)return;
+   const index=pages.indexOf(origin.pageId);
    const next=index+(dx<0?1:-1);
    if(next>=0&&next<pages.length)showPage(pages[next]);
- },{passive:true});
- app.addEventListener('touchcancel',()=>{start=null},{passive:true});
+ },{capture:true,passive:true});
+ document.addEventListener('touchcancel',()=>{start=null},{capture:true,passive:true});
 })();
 function orderedMileage(){return [...data.mileage].sort((a,b)=>a.date.localeCompare(b.date))}
 function allEntries(){return [...data.mileage.map(x=>({...x,kind:'km',sortDate:x.date})),...data.expenses.map(x=>({...x,kind:'expense',sortDate:x.date}))].sort((a,b)=>b.sortDate.localeCompare(a.sortDate))}
