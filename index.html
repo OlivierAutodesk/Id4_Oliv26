@@ -1035,7 +1035,7 @@ body.charge-active #chargePage .charge-app > .chart-card .chart-svg {
 </section>
 
 <section id="history" class="page">
- <div class="panel"><div class="sectiontitle"><h2>Historique complet</h2><button class="secondary smallbtn" onclick="exportData()">Exporter</button></div><div id="allEntries" class="empty">Aucune opération enregistrée.</div>
+ <div class="panel"><div class="sectiontitle"><h2>Historique complet</h2><button class="secondary smallbtn" onclick="exportData()">Exporter</button></div><div class="field" style="margin:10px 0 12px"><label for="historyFilter">Filtrer l’historique par type</label><select id="historyFilter"><option value="all">Tous les types</option><option value="km">Relevés de compteur</option><option value="expense">Toutes les dépenses</option><option value="Recharge domicile">Recharge domicile</option><option value="Recharge publique">Recharge publique</option><option value="Pneus">Pneus</option><option value="Entretien">Entretien</option><option value="Réparation">Réparation</option><option value="Accessoires">Accessoires</option><option value="Autre">Autre</option></select></div><div id="allEntries" class="empty">Aucune opération enregistrée.</div>
  <div class="actionrow"><button class="secondary" onclick="document.getElementById('importFile').click()">Importer une sauvegarde</button><button class="danger" onclick="clearData()">Tout effacer</button><input id="importFile" type="file" accept="application/json,.json" hidden></div>
  <p class="notice">Exporte régulièrement une sauvegarde JSON et conserve-la dans Fichiers ou iCloud Drive. Les données sont enregistrées dans le stockage local de ce navigateur et ne se synchronisent pas automatiquement entre appareils.</p></div>
  <div class="panel"><h2>Paramètres du contrat</h2><div class="entry"><span class="muted">Début</span><strong style="float:right">1 juin 2026</strong></div><div class="entry"><span class="muted">Fin</span><strong style="float:right">1 juin 2029</strong></div><div class="entry"><span class="muted">Forfait</span><strong style="float:right">45 000 km</strong></div><div class="entry"><span class="muted">Compteur à la livraison</span><strong id="historyStartOdo" style="float:right">0 km</strong></div><div class="entry"><span class="muted">Loyer mensuel</span><strong style="float:right">486,61 €</strong></div></div>
@@ -1145,17 +1145,33 @@ function renderCharts(){
    el.addEventListener('pointerdown',show);el.addEventListener('pointermove',show);el.addEventListener('click',show);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();const out=el.closest('.chart').querySelector('.chart-tip');if(out)out.textContent='Trajectoire théorique : de 0 km au 1er juin 2026 à 45 000 km au 1er juin 2029.'}});
  });
  document.querySelectorAll('.chart svg[data-chart="km"]').forEach(svg=>{
-   const show=e=>{
-     if(e.target.closest('[data-theory-line]'))return;if(e.type!=='pointermove'&&e.target.closest('[data-tip]'))return;
-     const rect=svg.getBoundingClientRect(),x=(e.clientX-rect.left)/rect.width*320,y=(e.clientY-rect.top)/rect.height*236;
-     if(x<45||x>310||y<20||y>189)return;
+   const showAt=(clientX,clientY)=>{
+     const rect=svg.getBoundingClientRect(),x=(clientX-rect.left)/rect.width*320,y=(clientY-rect.top)/rect.height*236;
+     if(x<45||x>310||y<12||y>205)return;
      const list=JSON.parse(svg.getAttribute('data-points')||'[]');if(!list.length)return;
      const dayStart=day(CONTRACT.start),domainEnd=svg.getAttribute('data-domain-end')||CONTRACT.end,daySpan=Math.max(1,day(domainEnd)-dayStart);
-     const nearest=list.reduce((best,item)=>{const itemX=45+(day(item.date)-dayStart)/daySpan*275;return Math.abs(itemX-x)<Math.abs(45+(day(best.date)-dayStart)/daySpan*275-x)?item:best},list[0]);
-     const tip=`${dateFmt(nearest.date)} — ${fmt(nearest.driven)} km parcourus (compteur : ${fmt(nearest.value)} km)`;
-     const target=svg.closest('.chart').querySelector('.chart-tip');if(target)target.textContent=tip;
+     const fraction=Math.max(0,Math.min(1,(x-45)/275)),dateDay=dayStart+fraction*daySpan;
+     const d=new Date(dateDay*86400000),dateStr=`${d.getUTCFullYear()}-${String(d.getUTCMonth()+1).padStart(2,'0')}-${String(d.getUTCDate()).padStart(2,'0')}`;
+     const contractFraction=Math.max(0,Math.min(1,(dateDay-dayStart)/(day(CONTRACT.end)-dayStart)));
+     const theoretical=CONTRACT.km*contractFraction;
+     const nearest=list.reduce((best,item)=>Math.abs(day(item.date)-dateDay)<Math.abs(day(best.date)-dateDay)?item:best,list[0]);
+     const projection=calculateProjection(orderedMileage(),true);
+     let projectedText='Projection : indisponible';
+     if(projection.last&&Number.isFinite(projection.projected)){
+       const lastDay=day(projection.last.date),endDay=day(CONTRACT.end),base=getStartOdometer();
+       let projectedAtDate;
+       if(dateDay<=lastDay){const f=Math.max(0,Math.min(1,(dateDay-day(CONTRACT.start))/Math.max(1,lastDay-day(CONTRACT.start))));projectedAtDate=Math.max(0,Number(projection.last.value)-base)*f;}
+       else {const f=Math.max(0,Math.min(1,(dateDay-lastDay)/Math.max(1,endDay-lastDay)));projectedAtDate=Math.max(0,Number(projection.last.value)-base)+(projection.projected-Math.max(0,Number(projection.last.value)-base))*f;}
+       projectedText=`Projection : ${fmt(Math.round(projectedAtDate))} km`;
+     }
+     const target=svg.closest('.chart').querySelector('.chart-tip');
+     if(target)target.textContent=`${dateFmt(dateStr)} · Théorique : ${fmt(Math.round(theoretical))} km · Réel (relevé le plus proche : ${dateFmt(nearest.date)}) : ${fmt(nearest.driven)} km · ${projectedText}`;
    };
-   svg.addEventListener('pointerdown',show);svg.addEventListener('pointermove',show);svg.addEventListener('click',show);
+   svg.addEventListener('pointerdown',e=>showAt(e.clientX,e.clientY));
+   svg.addEventListener('pointermove',e=>{if(e.pointerType==='touch'||e.buttons>0)showAt(e.clientX,e.clientY)});
+   svg.addEventListener('click',e=>showAt(e.clientX,e.clientY));
+   svg.addEventListener('touchstart',e=>{if(e.touches.length===1){const t=e.touches[0];showAt(t.clientX,t.clientY)}},{passive:true});
+   svg.addEventListener('touchmove',e=>{if(e.touches.length===1){const t=e.touches[0];showAt(t.clientX,t.clientY)}},{passive:true});
  });
  document.querySelectorAll('.chart svg[data-chart="km"]').forEach(svg=>{
    let pinchStartDistance=0, pinchStartScale=1, scale=1;
@@ -1287,7 +1303,9 @@ function render(){
  const total=totalExpenses();$('totalSpend').textContent=eur(total);$('grandTotal').textContent=eur(CONTRACT.monthly*CONTRACT.months+total);
  const charges=data.expenses.filter(x=>x.type.startsWith('Recharge'));const chargeSum=charges.reduce((s,x)=>s+Number(x.amount||0),0);const other=total-chargeSum;const kwh=charges.reduce((s,x)=>s+Number(x.kwh||0),0);
  $('chargeTotal').textContent=eur(chargeSum);$('otherTotal').textContent=eur(other);$('totalKwh').textContent=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:1}).format(kwh)+' kWh';$('avgKwh').textContent=kwh?eur(chargeSum/kwh)+'/kWh':'—';
- const entries=allEntries();$('allEntries').innerHTML=entries.length?entries.map(x=>entryHTML(x)).join(''):'<div class="empty">Aucune opération enregistrée.</div>';
+ const entries=allEntries(),filter=$('historyFilter')?.value||'all';
+ const filtered=entries.filter(x=>filter==='all'||(filter==='km'&&x.kind==='km')||(filter==='expense'&&x.kind==='expense')||(x.kind==='expense'&&x.type===filter));
+ $('allEntries').innerHTML=filtered.length?filtered.map(x=>entryHTML(x)).join(''):(entries.length?'<div class="empty">Aucune entrée ne correspond à ce filtre.</div>':'<div class="empty">Aucune opération enregistrée.</div>');
  renderCharts();
 }
 $('startOdoForm').addEventListener('submit',e=>{e.preventDefault();const value=Number($('startOdoValue').value);if(!Number.isFinite(value)||value<0||!Number.isInteger(value)){alert('Saisis un kilométrage initial entier et positif.');return}const active=orderedMileage().filter(x=>x.date>=CONTRACT.start&&x.date<=CONTRACT.end);if(active.some(x=>Number(x.value)<value)){alert('Le compteur initial ne peut pas dépasser un relevé déjà saisi pendant le contrat. Corrige ce relevé ou vérifie le compteur à la livraison.');return}data.startOdometer=value;save();alert('Compteur initial enregistré. Le calcul du forfait et les graphes ont été actualisés.');});
@@ -1297,7 +1315,7 @@ function deleteEntry(kind,id){if(!confirm('Supprimer définitivement cette entr�
 function exportData(){const blob=new Blob([JSON.stringify({version:1,contract:CONTRACT,...data},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sauvegarde-id4-lld-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)}
 $('importFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!Array.isArray(x.mileage)||!Array.isArray(x.expenses))throw Error();if(!confirm('Remplacer les données actuelles par celles de cette sauvegarde ?'))return;data={mileage:x.mileage,expenses:x.expenses,startOdometer:Math.max(0,Number(x.startOdometer)||0)};save();alert('Sauvegarde importée.')}catch(err){alert('Fichier de sauvegarde invalide.')}e.target.value=''});
 function clearData(){if(confirm('Effacer tous les relevés et toutes les dépenses de cet appareil ? Pense à exporter une sauvegarde avant.')){data={mileage:[],expenses:[],startOdometer:0};save()}}
-$('kmDate').value=today();$('expDate').value=today();setupProjectionTap();
+$('kmDate').value=today();$('expDate').value=today();$('historyFilter').addEventListener('change',render);setupProjectionTap();
 load();render();
 if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>
