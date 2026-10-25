@@ -1,0 +1,1789 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f5f9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="ID.4 Suivi">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<title>ID.4 — Suivi LLD</title>
+<style>
+:root{color-scheme:light;--bg:#f3f5f9;--panel:#ffffff;--panel2:#f8faff;--line:#dfe5ee;--text:#202635;--muted:#7b8494;--blue:#4968f5;--green:#168b68;--orange:#f59e0b;--red:#d9485f}
+*{box-sizing:border-box}html{background:var(--bg)}body{margin:0;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;min-height:100vh;padding:env(safe-area-inset-top) 0 calc(88px + env(safe-area-inset-bottom));font-size:16px}
+.app{max-width:520px;margin:auto;padding:18px 16px 28px}.top{display:flex;align-items:center;gap:12px;margin-bottom:20px}.logo{width:54px;height:54px;border-radius:16px;object-fit:cover}.eyebrow{color:var(--blue);font-size:11px;letter-spacing:1.8px;font-weight:800}.top h1{font-size:23px;line-height:1.1;margin:3px 0}.sub{color:var(--muted);font-size:13px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:16px;margin:10px 0;box-shadow:0 3px 12px #26334a0d}.hero{background:linear-gradient(135deg,#ffffff,#f2f5ff 68%);border-color:#dce3f4}.label{font-size:13px;color:var(--muted)}.big{font-size:38px;letter-spacing:-1.5px;font-weight:800;margin:5px 0}.unit{font-size:15px;color:var(--muted);letter-spacing:0}.row{display:flex;gap:12px}.stat{flex:1;min-width:0;background:#f7f9fc;border:1px solid #e4e9f1;border-radius:14px;padding:12px}.stat strong{display:block;font-size:20px;margin-top:5px}.stat small{color:var(--muted);font-size:12px}.progress{height:10px;background:#e3e7ef;border-radius:20px;overflow:hidden;margin:15px 0 8px}.bar{height:100%;width:0;background:linear-gradient(90deg,#26bce9,#5de0ae);border-radius:20px;transition:width .2s}.status{display:flex;align-items:center;flex-wrap:wrap;width:fit-content;max-width:100%;line-height:1.3;gap:5px 7px;border-radius:20px;padding:7px 11px;background:#e6f7ef;color:#137a59;font-size:12px;font-weight:700}.status.warn{background:#fff4d9;color:#9a6500}.status.bad{background:#ffebef;color:#b4233c}h2{font-size:18px;margin:0 0 14px}h3{font-size:15px;margin:0 0 10px}.muted{color:var(--muted)}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}label{font-size:12px;color:var(--muted)}input,select,textarea{width:100%;min-width:0;border:1px solid #d8dfeb;border-radius:12px;background:#ffffff;color:var(--text);font:inherit;padding:12px 11px;min-height:46px}input:focus,select:focus,textarea:focus{outline:2px solid var(--blue);outline-offset:1px}button{font:inherit;cursor:pointer;border:0;border-radius:13px;min-height:46px;padding:12px 15px;font-weight:750}.primary{background:var(--blue);color:#03152b;width:100%;margin-top:13px}.secondary{background:#edf1f8;color:#344054}.danger{background:#ffebef;color:#b4233c}.tabs{position:fixed;bottom:0;left:0;right:0;padding:5px 5px calc(5px + env(safe-area-inset-bottom));background:#ffffffed;backdrop-filter:blur(18px);border-top:1px solid #dfe5ee;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:1px;z-index:5;max-width:520px;margin:auto}.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;background:transparent;color:var(--muted);font-size:clamp(7.2px,2.1vw,10px);line-height:1;padding:5px 1px;min-height:49px;white-space:nowrap;letter-spacing:-.2px}.tab .ico{display:block;font-size:15px;line-height:1;margin:0;flex:0 0 auto}.tab.active{color:var(--blue);background:#e9edff;border-radius:10px}.page{display:none}.page.active{display:block}.entry{padding:12px 0;border-bottom:1px solid var(--line)}.entry:last-child{border-bottom:0}.entryhead{display:flex;justify-content:space-between;gap:8px;align-items:start}.amount{font-weight:800;white-space:nowrap}.pill{font-size:11px;color:var(--blue);background:#12354d;border-radius:20px;padding:5px 8px;display:inline-block;margin-top:6px}.empty{color:var(--muted);font-size:13px;padding:12px 0}.notice{font-size:12px;color:var(--muted);line-height:1.5}.twocol{display:grid;grid-template-columns:1fr 1fr;gap:10px}.actionrow{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.actionrow button{flex:1}.sectiontitle{display:flex;justify-content:space-between;align-items:center;gap:8px}.smallbtn{min-height:34px;padding:7px 10px;font-size:12px}.chart{width:100%;overflow:hidden}.chart svg{display:block;width:100%;height:auto;min-height:180px}.chart text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#a9bad0;font-size:10px}.chart .gridline{stroke:#263e5e;stroke-width:1}.chart .axis{stroke:#55708f;stroke-width:1}.chart .kmline{fill:none;stroke:#4968f5;stroke-width:3;stroke-linecap:round;stroke-linejoin:round}.chart .forecastline{fill:none;stroke:#12a594;stroke-width:3;stroke-dasharray:7 4;stroke-linecap:round;stroke-linejoin:round}.chart .targetline{fill:none;stroke:#f59e0b;stroke-width:2;stroke-dasharray:5 5}.chart .km-dot{fill:#4968f5;stroke:#ffffff;stroke-width:2}.chart .barrect{fill:#4968f5;opacity:.88}.chart .barlabel{font-size:9px}.chart .legend{font-size:10px}.chart [data-tip],.chart [data-theory-line]{cursor:pointer;touch-action:manipulation}.chart [data-tip]:focus,.chart [data-theory-line]:focus{outline:none;stroke:#ffbf69;stroke-width:3}.chart .hit-target{fill:transparent;stroke:transparent;pointer-events:all}.chart .theory-hit{fill:none;stroke:transparent;stroke-width:18;pointer-events:stroke}.chart-tip{font-size:12px;color:var(--blue);background:#f4f6fb;border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin-top:8px;min-height:38px;line-height:1.45;overflow-wrap:anywhere}.projection-tap{display:block;width:100%;text-align:left;background:transparent;color:inherit;padding:0;margin:5px 0 0;border:0;border-radius:0;min-height:0;font-weight:inherit;touch-action:manipulation;user-select:none;-webkit-user-select:none}.projection-tap strong{margin:0;font-size:20px;line-height:1.25;overflow-wrap:anywhere}.projection-tap:focus-visible{outline:2px solid var(--blue);outline-offset:4px;border-radius:4px}.projection-detail{margin-top:10px;padding:10px;border-radius:12px;border:1px solid #2e587b;background:#f8faff;color:var(--text);font-size:12px;line-height:1.5;overflow-wrap:anywhere}.projection-detail[hidden]{display:none}.projection-detail .calc-row{display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px solid #1e3550}.projection-detail .calc-row:last-of-type{border-bottom:0}.projection-detail .calc-label{color:var(--muted)}.projection-detail .calc-value{text-align:right;font-weight:700}.footer{text-align:center;color:#7187a3;font-size:11px;margin:22px 0 4px}
+@media(max-width:390px){.tab{font-size:clamp(7px,2.05vw,8.5px)}.tab .ico{font-size:14px}.app{padding:14px 12px 24px}.top{gap:9px;margin-bottom:14px}.logo{width:48px;height:48px;border-radius:14px}.top h1{font-size:21px}.panel{padding:14px;border-radius:18px}.row{gap:8px}.stat{padding:10px}.stat strong,.projection-tap strong{font-size:18px}.big{font-size:34px}.formgrid{gap:8px}.tab{font-size:9px;gap:2px;padding-left:0;padding-right:0}.tab .ico{font-size:13px}}@media(max-width:350px){.tab{font-size:7px;letter-spacing:-.4px;gap:4px}.tab .ico{font-size:12px}.app{padding-left:10px;padding-right:10px}.panel{padding:12px}.stat{padding:9px}}@media(min-width:600px){body{padding-bottom:20px}.tabs{position:static;border:1px solid var(--line);border-radius:18px;margin:10px auto 20px}.app{padding-top:28px}}
+
+
+    #chargePage{
+      --bg: #f3f5f9;
+      --card: #ffffff;
+      --text: #202635;
+      --muted: #7b8494;
+      --accent: #4968f5;
+      --accent-soft: #e8edff;
+      --border: #dfe5ee;
+      --warning: #ff7885;
+      --shadow: 0 4px 14px rgba(0, 0, 0, .16);
+    }
+
+    #chargePage .charge-app, #chargePage .charge-app *{ box-sizing: border-box; }
+
+    #chargePage .charge-app{
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding: 8px;
+    }
+
+    #chargePage button, #chargePage input, #chargePage select{
+      font: inherit;
+    }
+
+    #chargePage .charge-app{
+      width: min(430px, 100%);
+      margin: 0 auto;
+    }
+
+    #chargePage .topbar{
+      min-height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 2px 4px 6px;
+    }
+
+    #chargePage .topbar h1{
+      margin: 0;
+      font-size: 1.12rem;
+      letter-spacing: -.015em;
+    }
+
+    #chargePage .tool-btn{
+      border: 1px solid var(--border);
+      background: #142946;
+      color: var(--text);
+      border-radius: 11px;
+      min-height: 36px;
+      padding: 7px 10px;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: var(--shadow);
+    }
+
+    #chargePage .card{
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 10px 12px;
+      margin-bottom: 6px;
+      box-shadow: var(--shadow);
+    }
+
+    #chargePage .card h2{
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 0 0 9px;
+      font-size: 1rem;
+    }
+
+    #chargePage .meta{
+      color: var(--muted);
+      font-size: .75rem;
+      font-weight: 600;
+    }
+
+    #chargePage .label{
+      font-weight: 650;
+    }
+
+    #chargePage .value{
+      font-variant-numeric: tabular-nums;
+      font-weight: 750;
+    }
+
+    #chargePage .slider-block{
+      margin-bottom: 9px;
+    }
+
+    #chargePage .slider-block:last-of-type{
+      margin-bottom: 0;
+    }
+
+    #chargePage .slider-head{
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 3px;
+    }
+
+    #chargePage input[type="range"]{
+      width: 100%;
+      accent-color: var(--accent);
+    }
+
+    #chargePage .controls-grid{
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    #chargePage .field-label{
+      display: block;
+      color: var(--muted);
+      font-size: .75rem;
+      font-weight: 700;
+      margin: 0 0 5px 2px;
+    }
+
+    #chargePage select, #chargePage input[type="number"], #chargePage input[type="time"]{
+      width: 100%;
+      min-height: 43px;
+      font-size: 1rem;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: #142946;
+      color: var(--text);
+    }
+
+    #chargePage .tariffs{
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+    }
+
+    #chargePage .tariff-btn{
+      border: 1px solid var(--border);
+      background: #142946;
+      border-radius: 14px;
+      padding: 8px 5px;
+      cursor: pointer;
+      font-weight: 750;
+      min-width: 0;
+    }
+
+    #chargePage .tariff-btn small{
+      display: block;
+      margin-top: 3px;
+      color: var(--muted);
+      font-size: .7rem;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    #chargePage .tariff-btn.active{
+      background: var(--accent-soft);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    #chargePage .custom-wrap{
+      margin-top: 7px;
+      display: none;
+    }
+
+    #chargePage .results{
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 5px;
+    }
+
+    #chargePage .result{
+      min-width: 0;
+      background: #091a32;
+      border-radius: 13px;
+      padding: 9px 4px;
+      text-align: center;
+    }
+
+    #chargePage .result .caption{
+      color: var(--muted);
+      font-size: .69rem;
+      line-height: 1.1;
+      min-height: 1.55em;
+    }
+
+    #chargePage .result .big{
+      margin-top: 5px;
+      font-size: .93rem;
+      line-height: 1.08;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      overflow-wrap: anywhere;
+    }
+
+    #chargePage .result.highlight{
+      background: var(--accent-soft);
+    }
+
+    #chargePage .error{
+      display: none;
+      margin-top: 6px;
+      color: var(--warning);
+      font-weight: 600;
+      font-size: .82rem;
+    }
+
+    #chargePage .chart-card{
+      padding-bottom: 8px;
+    }
+
+    #chargePage .chart-card h2{
+      margin-bottom: 2px;
+    }
+
+    #chargePage .chart-wrap{
+      width: 100%;
+      height: 156px;
+    }
+
+    #chargePage .chart-svg{
+      width: 100%;
+      height: 100%;
+      display: block;
+      overflow: visible;
+      touch-action: pan-y;
+      cursor: crosshair;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    #chargePage .chart-grid{
+      stroke: #263e5e;
+      stroke-width: 1;
+      vector-effect: non-scaling-stroke;
+    }
+
+    #chargePage .chart-threshold{
+      stroke: #ffbf69;
+      stroke-width: 1.2;
+      stroke-dasharray: 4 4;
+      vector-effect: non-scaling-stroke;
+    }
+
+    #chargePage .chart-area{
+      fill: var(--accent-soft);
+      opacity: .72;
+    }
+
+    #chargePage .chart-line{
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vector-effect: non-scaling-stroke;
+    }
+
+    #chargePage .chart-dot{
+      fill: #f4f8ff;
+      stroke: var(--accent);
+      stroke-width: 2.5;
+      vector-effect: non-scaling-stroke;
+    }
+
+    #chargePage .chart-text{
+      fill: var(--muted);
+      font-size: 10px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    #chargePage .chart-text-strong{
+      fill: var(--text);
+      font-size: 10px;
+      font-weight: 700;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    #chargePage .chart-scrubber{
+      pointer-events: none;
+    }
+
+    #chargePage .chart-scrubber-line{
+      stroke: #64748b;
+      stroke-width: 1.2;
+      stroke-dasharray: 3 3;
+      vector-effect: non-scaling-stroke;
+    }
+
+    #chargePage .chart-scrubber-dot{
+      fill: var(--accent);
+      stroke: #f4f8ff;
+      stroke-width: 2.5;
+      vector-effect: non-scaling-stroke;
+    }
+
+    #chargePage .chart-tooltip-bg{
+      fill: #091a32;
+      opacity: .95;
+    }
+
+    #chargePage .chart-tooltip-title, #chargePage .chart-tooltip-sub{
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #chargePage .chart-tooltip-title{
+      fill: #ffffff;
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    #chargePage .chart-tooltip-sub{
+      fill: #cbd5e1;
+      font-size: 9.5px;
+      font-weight: 600;
+    }
+
+    #chargePage .modal{
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, .68);
+      padding: 12px;
+    }
+
+    #chargePage .modal.open{
+      display: flex;
+    }
+
+    #chargePage .sheet{
+      width: min(430px, 100%);
+      background: #142946;
+      border-radius: 20px;
+      padding: 14px;
+      box-shadow: 0 18px 50px rgba(0, 0, 0, .22);
+      animation: chargeSheetIn .18s ease-out;
+    }
+
+    @keyframes chargeSheetIn {
+      from { transform: scale(.98); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    #chargePage .sheet-head{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    #chargePage .sheet-head h2{
+      margin: 0;
+      font-size: 1.05rem;
+    }
+
+    #chargePage .close-btn{
+      width: 36px;
+      height: 36px;
+      border: 0;
+      border-radius: 50%;
+      background: #203956;
+      cursor: pointer;
+      font-size: 1.15rem;
+      line-height: 1;
+    }
+
+    #chargePage .duration-result{
+      margin-top: 10px;
+      padding: 12px;
+      border-radius: 14px;
+      background: var(--accent-soft);
+      text-align: center;
+    }
+
+    #chargePage .duration-result span{
+      display: block;
+      color: var(--accent);
+      font-size: .78rem;
+      font-weight: 700;
+    }
+
+    #chargePage .duration-result strong{
+      display: block;
+      margin-top: 4px;
+      font-size: 1.3rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    #chargePage .sheet-note{
+      margin: 8px 2px 0;
+      color: var(--muted);
+      font-size: .72rem;
+      line-height: 1.3;
+      text-align: center;
+    }
+
+    @media (max-width: 380px) {
+      #chargePage .topbar h1{ font-size: 1.02rem; }
+      #chargePage .tool-btn{ padding-inline: 8px; }
+      #chargePage .card{ padding-inline: 10px; }
+      #chargePage .tariff-btn{ font-size: .74rem; }
+      #chargePage .tariff-btn small{ font-size: .64rem; }
+      #chargePage .result .caption{ font-size: .64rem; }
+      #chargePage .result .big{ font-size: .84rem; }
+    }
+
+    @media (max-height: 720px) {
+      #chargePage .charge-app{ padding-top: max(4px, env(safe-area-inset-top)); }
+      #chargePage .topbar{ min-height: 38px; padding-bottom: 4px; }
+      #chargePage .tool-btn{ min-height: 33px; padding-block: 5px; }
+      #chargePage .card{ padding-block: 8px; margin-bottom: 4px; }
+      #chargePage .card h2{ margin-bottom: 7px; }
+      #chargePage .slider-block{ margin-bottom: 6px; }
+      #chargePage select, #chargePage input[type="number"], #chargePage input[type="time"]{ min-height: 39px; }
+      #chargePage .result{ padding-block: 7px; }
+      #chargePage .chart-wrap{ height: 132px; }
+    }
+
+    @media (max-width: 640px) {
+      #chargePage .charge-app{
+        padding-left: max(6px, env(safe-area-inset-left));
+        padding-right: max(6px, env(safe-area-inset-right));
+        padding-bottom: max(6px, env(safe-area-inset-bottom));
+      }
+    }
+  
+#chargePage .charge-app{max-width:430px;padding:0;margin:0 auto;color:var(--text)}
+#chargePage .charge-app .tool-btn{min-height:36px;padding:7px 10px;background:#203956;color:var(--text);border-color:var(--line, #263e5e);box-shadow:none}
+#chargePage .charge-app .tariff-btn{min-height:54px;background:#091a32;color:var(--text);border-color:#263e5e}
+#chargePage .charge-app .tariff-btn.active{background:#e8edff;border-color:#4968f5;color:#3856dc}
+#chargePage .charge-app .tariff-btn small{color:#a9bad0;white-space:normal}
+#chargePage .charge-app select,#chargePage .charge-app input[type="number"],#chargePage .charge-app input[type="time"]{background:#ffffff;color:#202635;border-color:#d8dfeb;color-scheme:light}
+#chargePage .charge-app .sheet{background:#ffffff;color:#202635}
+#chargePage .charge-app .close-btn{min-height:36px;width:36px;height:36px;padding:0;background:#edf1f8;color:#202635}
+#chargePage .charge-app .duration-result{background:#e8edff;color:#202635}
+#chargePage .charge-app .duration-result span{color:#38c9f5}
+#chargePage .charge-app .chart-tooltip-bg{fill:#ffffff;stroke:#dfe5ee;stroke-width:1}
+#chargePage .charge-app .chart-wrap{height:125px}
+@media(max-width:390px){#chargePage .charge-app .results{gap:4px}#chargePage .charge-app .result{padding:8px 3px}#chargePage .charge-app .result .caption{font-size:.63rem}#chargePage .charge-app .result .big{font-size:.8rem}}
+
+
+.projection-detail.panel{width:100%;min-width:0;margin-top:10px}
+#chargePage .charge-app .topbar{margin-bottom:8px}
+#chargePage .charge-app .card{margin-bottom:9px}
+#chargePage .charge-app .topbar h1{font-size:1.08rem}
+#chargePage .charge-app .chart-svg{touch-action:pan-y;max-width:100%}
+
+
+    /* Duration dialog theme alignment v7 */
+    #chargePage .modal{
+      background: rgba(32, 38, 53, .38);
+      -webkit-backdrop-filter: blur(3px);
+      backdrop-filter: blur(3px);
+    }
+    #chargePage .sheet{
+      background: #ffffff;
+      color: #202635;
+      border: 1px solid #dfe5ee;
+      border-radius: 20px;
+      box-shadow: 0 18px 48px rgba(35, 48, 73, .2);
+    }
+    #chargePage .sheet .sheet-head h2{
+      color: #202635;
+    }
+    #chargePage .sheet .field-label{
+      color: #7b8494;
+    }
+    #chargePage .sheet input[type="time"]{
+      background: #ffffff;
+      color: #202635;
+      border: 1px solid #d8dfeb;
+      color-scheme: light;
+      box-shadow: none;
+    }
+    #chargePage .sheet input[type="time"]:focus{
+      outline: 2px solid #4968f5;
+      outline-offset: 1px;
+    }
+    #chargePage .sheet .close-btn{
+      min-width: 36px;
+      min-height: 36px;
+      width: 36px;
+      height: 36px;
+      padding: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #e8edff;
+      color: #3856dc;
+      border: 1px solid #d5ddff;
+      font-size: 1.3rem;
+      box-shadow: none;
+    }
+    #chargePage .sheet .close-btn:focus-visible{
+      outline: 2px solid #4968f5;
+      outline-offset: 2px;
+    }
+    #chargePage .sheet .duration-result{
+      background: #e8edff;
+      border: 1px solid #d5ddff;
+      color: #202635;
+    }
+    #chargePage .sheet .duration-result span{
+      color: #3856dc;
+    }
+    #chargePage .sheet .duration-result strong{
+      color: #202635;
+    }
+    #chargePage .sheet .sheet-note{
+      color: #7b8494;
+    }
+
+</style>
+<style>
+/* Présentation claire inspirée de la capture, optimisée pour iPhone */
+.app{padding-top:10px;padding-bottom:calc(64px + env(safe-area-inset-bottom))}
+.top{margin-bottom:10px}
+.tabs{padding:4px 4px calc(4px + env(safe-area-inset-bottom));gap:2px}
+.tab{min-height:46px;font-size:clamp(7px,1.95vw,10px)}
+.tab .ico{font-size:16px}
+input,select,textarea{background:#fff;color:#202635;border-color:#d8dfeb}
+.primary{background:#4968f5;color:#fff}
+#chargePage .charge-app{padding:0 2px 2px}
+#chargePage .charge-app .topbar{min-height:36px;padding:0 3px 4px;margin-bottom:4px}
+#chargePage .charge-app .card{padding:8px 10px;margin-bottom:5px;border-radius:15px;box-shadow:0 2px 8px #26334a0a}
+#chargePage .charge-app .card h2{margin-bottom:6px}
+#chargePage .charge-app .slider-block{margin-bottom:5px}
+#chargePage .charge-app input[type=range]{min-height:22px;padding:0}
+#chargePage .charge-app select,#chargePage .charge-app input[type=number],#chargePage .charge-app input[type=time]{min-height:36px;padding:7px 9px}
+#chargePage .charge-app .tariff-btn{min-height:48px;padding:6px 4px}
+#chargePage .charge-app .result{padding:7px 3px}
+#chargePage .charge-app .result .big{font-size:.86rem;margin-top:3px}
+#chargePage .charge-app .chart-wrap{height:112px}
+#chargePage .charge-app .chart-card{padding-bottom:4px}
+#graphs .panel{padding:10px 12px;margin:6px 0;border-radius:15px}
+#graphs h2{font-size:15px;margin-bottom:5px}
+#graphs .notice{display:none}
+#graphs .chart svg{height:clamp(115px,23vh,175px);min-height:0}
+#graphs .chart-tip{margin-top:4px;min-height:30px;padding:6px 8px;font-size:11px}
+#graphs .chart-tip:empty{display:none}
+@media(max-height:740px){.app{padding-top:6px}#chargePage .charge-app .chart-wrap{height:94px}#graphs .chart svg{height:115px}}
+</style>
+<style>
+
+/* Version 3 : compacité des écrans et graphes réellement pleine largeur */
+:root { --blue: #4968f5; }
+html, body { max-width: 100%; overflow-x: clip; }
+.app { padding-top: 8px; padding-bottom: calc(58px + env(safe-area-inset-bottom)); }
+.top { gap: 9px; margin-bottom: 8px; }
+.logo { width: 44px; height: 44px; border-radius: 12px; }
+.top h1 { font-size: 20px; }
+.eyebrow { font-size: 9px; letter-spacing: 1.2px; }
+.sub { font-size: 11px; }
+.panel { margin: 7px 0; padding: 11px; border-radius: 15px; }
+h2 { font-size: 16px; margin-bottom: 8px; }
+.row { gap: 8px; }
+.stat { padding: 9px; border-radius: 12px; }
+.stat strong { font-size: 17px; line-height: 1.16; overflow-wrap: anywhere; }
+.stat small { font-size: 11px; line-height: 1.2; }
+.big { font-size: 32px; }
+.hero .progress { margin: 9px 0 7px; height: 8px; }
+#home .notice { display: none; }
+#home .panel.hero { padding: 12px; }
+#home .hero .row .stat strong { font-size: 16px; }
+#home > .row { margin: 7px 0; }
+#home > .row .stat { min-height: 70px; }
+#home .projection-tap strong { font-size: 17px; }
+#home .projection-detail:not([hidden]) { max-height: 42vh; overflow-y: auto; }
+#home .footer { display: none; }
+#home .sectiontitle h2, #mileage .sectiontitle h2 { margin: 0; }
+.sectiontitle { align-items: center; }
+.info-pop { position: relative; flex: 0 0 auto; }
+.info-pop > summary { list-style: none; display: grid; place-items: center; width: 23px; height: 23px; border-radius: 50%; border: 1px solid #c7d2fe; background: #eef2ff; color: #3856dc; font-weight: 800; font-size: 13px; cursor: pointer; user-select: none; }
+.info-pop > summary::-webkit-details-marker { display: none; }
+.info-pop[open] > p { position: absolute; z-index: 30; right: 0; top: 25px; width: min(270px, 76vw); margin: 0; padding: 10px 12px; background: #fff; color: #202635; border: 1px solid #cbd5e1; border-radius: 11px; box-shadow: 0 7px 24px #13213b2b; font-size: 12px; line-height: 1.45; font-weight: 500; }
+#mileage .panel h2 { margin-bottom: 8px; }
+#mileage .formgrid { gap: 7px; }
+#mileage .field { gap: 4px; }
+#mileage input, #mileage select { min-height: 39px; padding: 8px 9px; }
+#mileage .primary { min-height: 40px; margin-top: 9px; padding: 9px 12px; }
+#expenses .panel h2 { margin-bottom: 8px; }
+#expenses .formgrid { gap: 7px; }
+#expenses .field { gap: 4px; }
+#expenses input, #expenses select { min-height: 38px; padding: 7px 9px; }
+#expenses .primary { min-height: 40px; margin-top: 9px; padding: 9px 12px; }
+#expenses .twocol { gap: 6px; }
+#expenses .stat { padding: 8px; }
+#expenses .stat strong { font-size: 15px; }
+#expenses .stat small { font-size: 10px; }
+
+/* Charge : pleine largeur, palette claire et contrastes renforcés. */
+#chargePage.page.active { width: 100vw; max-width: 100vw; margin-left: calc(50% - 50vw); padding: 0; }
+#chargePage .charge-app { width: 100%; max-width: none; margin: 0; padding: 0 9px 4px; background: #f3f5f9; color: #202635; }
+#chargePage .charge-app .topbar { padding: 0 2px 4px; }
+#chargePage .charge-app .tool-btn { background: #edf1f8; color: #202635; border-color: #dfe5ee; }
+#chargePage .charge-app .tariff-btn { background: #fff; color: #202635; border-color: #dfe5ee; }
+#chargePage .charge-app .tariff-btn small { color: #697386; }
+#chargePage .charge-app .tariff-btn.active { background: #e8edff; color: #304ed8; border-color: #4968f5; }
+#chargePage .charge-app .tariff-btn.active small { color: #304ed8; }
+#chargePage .charge-app .result { background: #f7f9fc; color: #202635; border: 1px solid #e4e9f1; }
+#chargePage .charge-app .result .caption { color: #697386; }
+#chargePage .charge-app .result .big { color: #202635; }
+#chargePage .charge-app .result.highlight { background: #e8edff; border-color: #d5defe; }
+#chargePage .charge-app .result.highlight .caption { color: #3856dc; }
+#chargePage .charge-app .duration-result span { color: #3856dc; }
+#chargePage .charge-app .chart-card { padding-left: 8px; padding-right: 8px; }
+#chargePage .charge-app .chart-wrap { width: 100%; }
+#chargePage .charge-app .chart-svg { width: 100%; max-width: none; }
+
+/* Graphes : deux panneaux successifs, chacun bord à bord et avec SVG à 100 %. */
+#graphs.page.active { display: block; width: 100vw; max-width: 100vw; margin-left: calc(50% - 50vw); padding: 0; }
+#graphs .panel { width: 100%; margin: 0 0 9px; padding: 11px 8px 9px; border-left: 0; border-right: 0; border-radius: 0; box-shadow: none; }
+#graphs .panel h2 { padding: 0 3px; font-size: 15px; }
+#graphs .chart { width: 100%; max-width: none; overflow: visible; }
+#graphs .chart svg { display: block; width: 100%; max-width: none; height: clamp(190px, 30vh, 250px); min-height: 190px; }
+#graphs .chart-tip { margin: 5px 3px 0; }
+#graphs .empty { padding: 10px 3px; }
+
+@media (max-width: 390px) {
+  .app { padding-left: 10px; padding-right: 10px; }
+  #mileage .panel, #expenses .panel { padding: 10px; }
+  #chargePage .charge-app { padding-left: 7px; padding-right: 7px; }
+  #graphs .panel { padding-left: 5px; padding-right: 5px; }
+  #graphs .chart svg { height: 220px; }
+}
+@media (max-height: 780px) {
+  .app { padding-top: 4px; }
+  .top { margin-bottom: 5px; }
+  #home .panel { padding: 9px; margin: 5px 0; }
+  #home .hero .progress { margin: 6px 0 5px; }
+  #mileage .panel, #expenses .panel { padding: 9px; margin: 5px 0; }
+  #mileage .primary, #expenses .primary { margin-top: 6px; }
+  #expenses .field.full input { min-height: 35px; }
+}
+
+</style>
+
+<style>
+/* Ajustements finaux : une seule rangée de contenu, largeur bord à bord et graphes tactiles */
+body { padding-bottom: 0 !important; }
+.app { padding-bottom: calc(64px + env(safe-area-inset-bottom)); }
+#chargePage .charge-app { padding-left: 0; padding-right: 0; }
+#chargePage .charge-app .card { margin-left: 0; margin-right: 0; }
+#chargePage .charge-app .chart-card { padding-left: 0; padding-right: 0; }
+#chargePage .charge-app .chart-card h2 { padding-left: 10px; padding-right: 10px; }
+#chargePage .charge-app .chart-wrap { width: 100%; height: 118px; }
+#chargePage .charge-app .chart-svg { width: 100%; max-width: none; }
+#chargePage .charge-app .chart-tooltip-title,
+#chargePage .charge-app .chart-tooltip-sub { fill: #202635; }
+#graphs .panel { padding-left: 0; padding-right: 0; }
+#graphs .panel h2 { padding-left: 10px; padding-right: 10px; }
+#graphs .chart svg { height: clamp(330px, 42vh, 390px); min-height: 330px; }
+#graphs .chart-tip { margin-left: 10px; margin-right: 10px; }
+#graphs .chart text { fill: #65738b; }
+#graphs .chart .legend { fill: #65738b; }
+@media (max-width: 390px) {
+  #chargePage .charge-app { padding-left: 0; padding-right: 0; }
+  #graphs .panel { padding-left: 0; padding-right: 0; }
+  #graphs .chart svg { height: clamp(330px, 42vh, 380px); min-height: 330px; }
+}
+</style>
+
+
+<style>
+/* Finition iPhone : pas de pied de page inutile, vue Charge sans en-tête doublon */
+.footer { display: none !important; }
+body.charge-active .top { display: none; }
+@media (max-height: 780px) {
+  body.charge-active .app { padding-top: 3px; }
+  #chargePage .charge-app .topbar { min-height: 31px; padding-top: 0; padding-bottom: 2px; margin-bottom: 3px; }
+  #chargePage .charge-app .card { padding-top: 6px; padding-bottom: 6px; margin-bottom: 4px; }
+  #chargePage .charge-app .card h2 { margin-bottom: 4px; }
+  #chargePage .charge-app .slider-block { margin-bottom: 3px; }
+  #chargePage .charge-app select,
+  #chargePage .charge-app input[type="number"],
+  #chargePage .charge-app input[type="time"] { min-height: 32px; padding-top: 5px; padding-bottom: 5px; }
+  #chargePage .charge-app .tariff-btn { min-height: 42px; padding-top: 4px; padding-bottom: 4px; }
+  #chargePage .charge-app .result { padding-top: 5px; padding-bottom: 5px; }
+  #chargePage .charge-app .chart-wrap { height: 82px; }
+}
+</style>
+
+
+<style id="viewport-width-fix-v4">
+/* Les onglets Charge et Graphes restent au format téléphone sur grand écran.
+   Sur iPhone, ils occupent la quasi-totalité de la largeur disponible, avec 5 px de marge de chaque côté. */
+#chargePage.page.active,
+#graphs.page.active {
+  display: block;
+  width: min(calc(100vw - 10px), 430px);
+  max-width: 430px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+}
+#chargePage .charge-app {
+  width: 100%;
+  max-width: 100%;
+  margin: 0;
+}
+#chargePage .charge-app .chart-card,
+#chargePage .charge-app .chart-wrap,
+#chargePage .charge-app .chart-svg {
+  width: 100%;
+  max-width: 100%;
+}
+#graphs .panel,
+#graphs .chart,
+#graphs .chart svg {
+  width: 100%;
+  max-width: 100%;
+}
+@media (max-width: 390px) {
+  #chargePage.page.active,
+  #graphs.page.active { width: calc(100vw - 10px); }
+}
+</style>
+
+<style id="charge-chart-fill-v5">
+/* Version 5 : la courbe de charge absorbe l'espace vertical libre jusqu'à la barre de navigation. */
+body.charge-active { overflow: hidden; }
+body.charge-active .app {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  padding: 0;
+  margin: 0 auto;
+}
+body.charge-active .app > main {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+}
+body.charge-active #chargePage.page.active {
+  display: block;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+body.charge-active #chargePage .charge-app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+body.charge-active #chargePage .charge-app > .card { flex: 0 0 auto; }
+body.charge-active #chargePage .charge-app > .chart-card {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-height: 0;
+  margin-bottom: 0;
+  padding-bottom: 4px;
+}
+body.charge-active #chargePage .charge-app > .chart-card h2 { flex: 0 0 auto; }
+body.charge-active #chargePage .charge-app > .chart-card .chart-wrap {
+  flex: 1 1 0;
+  width: 100%;
+  height: auto !important;
+  min-height: 72px;
+  min-width: 0;
+}
+body.charge-active #chargePage .charge-app > .chart-card .chart-svg {
+  display: block;
+  width: 100%;
+  height: 100% !important;
+  max-width: none;
+  min-height: 0;
+}
+@media (max-width: 599px) {
+  body.charge-active .app {
+    width: 100%;
+    max-width: 520px;
+    height: calc(100dvh - env(safe-area-inset-top) - 55px - env(safe-area-inset-bottom));
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+@media (min-width: 600px) {
+  body.charge-active .app {
+    width: min(100%, 520px);
+    height: calc(100dvh - 85px);
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+</style>
+
+</head>
+<body>
+<div class="app">
+<header class="top"><img class="logo" src="icon-512.png" alt=""><div><div class="eyebrow">MON VÉHICULE ÉLECTRIQUE</div><h1>Suivi LLD ID.4</h1><div class="sub">Contrat du 01/06/2026 au 01/06/2029</div></div></header>
+
+<main>
+<section id="home" class="page active">
+ <div class="panel hero">
+  <div class="label">Compteur au dernier relevé</div><div class="big" id="currentKm">— <span class="unit">km</span></div>
+  <div id="kmStatus" class="status">Ajoute ton premier relevé</div>
+  <div class="progress"><div class="bar" id="kmBar"></div></div>
+  <div class="row"><div class="stat"><small>Forfait restant</small><strong id="remaining">45 000 km</strong></div><div class="stat"><small>Rythme moyen cible</small><strong>1 250 <span class="unit">km/mois</span></strong></div></div>
+ </div>
+ <div class="row"><div class="stat"><small>Projection fin de contrat</small><button type="button" id="projectionTap" class="projection-tap" aria-expanded="false" aria-controls="projectionDetail" title="Toucher ou maintenir pour afficher le détail du calcul"><strong id="projection">À calculer</strong></button><small id="projectionHint">Toucher pour le détail du calcul</small></div><div class="stat"><small>Dépenses enregistrées</small><strong id="totalSpend">0,00 €</strong><small>hors loyers</small></div></div><div id="projectionDetail" class="projection-detail panel" hidden aria-live="polite"></div>
+ <div class="panel"><div class="sectiontitle"><h2>Coût global estimé</h2><details class="info-pop"><summary aria-label="Informations sur le coût global">i</summary><p>Les dépenses et les loyers sont séparés. Le calcul utilise 36 mensualités de 486,61 €.</p></details></div><div class="row"><div class="stat"><small>Loyers sur 36 mois</small><strong>17 517,96 €</strong></div><div class="stat"><small>Coût enregistré + loyers</small><strong id="grandTotal">17 517,96 €</strong></div></div></div>
+</section>
+
+<section id="mileage" class="page">
+ <div class="panel"><div class="sectiontitle"><h2>Ajouter un relevé kilométrique</h2><details class="info-pop"><summary aria-label="Aide sur le relevé kilométrique">i</summary><p>Entre le compteur total affiché au tableau de bord, et non les kilomètres parcourus depuis le dernier relevé. Les relevés sont contrôlés selon leur date.</p></details></div><form id="kmForm"><div class="formgrid">
+ <div class="field"><label for="kmDate">Date du relevé</label><input id="kmDate" type="date" required></div>
+ <div class="field"><label for="kmValue">Compteur (km)</label><input id="kmValue" type="number" inputmode="numeric" min="0" step="1" placeholder="Ex. 12500" required></div>
+ <div class="field full"><label for="kmNote">Note (facultatif)</label><input id="kmNote" maxlength="120" placeholder="Ex. relevé mensuel"></div>
+ </div><button class="primary">Enregistrer le relevé</button></form></div>
+ <div class="panel"><div class="sectiontitle"><h2>Kilométrage à la livraison</h2><details class="info-pop"><summary aria-label="Aide sur le compteur à la livraison">i</summary><p>Saisis le compteur au moment de la remise des clés. Le forfait de 45 000 km concerne la distance parcourue pendant la LLD. Si le compteur était à zéro, conserve 0.</p></details></div><form id="startOdoForm"><div class="formgrid"><div class="field full"><label for="startOdoValue">Compteur à la livraison (km)</label><input id="startOdoValue" type="number" inputmode="numeric" min="0" step="1" required inputmode="numeric" placeholder="Ex. 18"></div></div><button class="primary">Enregistrer le compteur initial</button></form></div>
+</section>
+
+<section id="expenses" class="page">
+ <div class="panel"><h2>Enregistrer une dépense</h2><form id="expenseForm"><div class="formgrid">
+ <div class="field"><label for="expType">Catégorie</label><select id="expType"><option value="Recharge domicile">Recharge domicile</option><option value="Recharge publique">Recharge publique</option><option value="Pneus">Pneus</option><option value="Entretien">Entretien</option><option value="Réparation">Réparation</option><option value="Accessoires">Accessoires</option><option value="Autre">Autre</option></select></div>
+ <div class="field"><label for="expDate">Date</label><input id="expDate" type="date" required></div>
+ <div class="field"><label for="expAmount">Montant (€)</label><input id="expAmount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0,00" required></div>
+ <div class="field"><label for="expKwh">Énergie (kWh, facultatif)</label><input id="expKwh" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Ex. 42,5"></div>
+ <div class="field full"><label for="expPlace">Lieu / fournisseur (facultatif)</label><input id="expPlace" maxlength="100" placeholder="Ex. domicile, Ionity…"></div>
+ <div class="field full"><label for="expNote">Commentaire (facultatif)</label><input id="expNote" maxlength="160" placeholder="Ex. remplacement des pneus avant"></div>
+ </div><button class="primary">Enregistrer la dépense</button></form></div>
+ <div class="panel"><h2>Résumé des dépenses</h2><div class="twocol"><div class="stat"><small>Recharges</small><strong id="chargeTotal">0,00 €</strong></div><div class="stat"><small>Autres frais</small><strong id="otherTotal">0,00 €</strong></div><div class="stat"><small>Énergie enregistrée</small><strong id="totalKwh">0 kWh</strong></div><div class="stat"><small>Coût recharge moyen</small><strong id="avgKwh">—</strong></div></div></div>
+</section>
+
+
+<section id="chargePage" class="page">
+ <div class="charge-app">
+    <header class="topbar">
+      <h1>⚡ Charge ID.4</h1>
+      <button class="tool-btn" id="durationOpen" type="button">⏱ Durée</button>
+    </header>
+
+    <section class="card">
+      <h2>
+        <span>Batterie</span>
+        <span class="meta">77 kWh</span>
+      </h2>
+
+      <div class="slider-block">
+        <div class="slider-head">
+          <span class="label">Niveau de départ</span>
+          <span class="value"><span id="startValue">20</span> %</span>
+        </div>
+        <input id="startLevel" type="range" min="0" max="100" value="20" step="1" />
+      </div>
+
+      <div class="slider-block">
+        <div class="slider-head">
+          <span class="label">Niveau de fin</span>
+          <span class="value"><span id="endValue">80</span> %</span>
+        </div>
+        <input id="endLevel" type="range" min="0" max="100" value="80" step="1" />
+      </div>
+
+      <div class="error" id="rangeError">Le niveau de fin doit être supérieur au niveau de départ.</div>
+    </section>
+
+    <section class="card">
+      <h2>Recharge</h2>
+      <div class="controls-grid">
+        <div>
+          <label class="field-label" for="power">Puissance</label>
+          <select id="power">
+            <option value="2.3">2,3 kW</option>
+            <option value="3.7">3,7 kW</option>
+            <option value="4.5">4,5 kW</option>
+            <option value="5">5 kW</option>
+            <option value="5.5">5,5 kW</option>
+            <option value="6" selected>6 kW</option>
+            <option value="7.4">7,4 kW</option>
+            <option value="11">11 kW</option>
+            <option value="22">22 kW</option>
+            <option value="50">50 kW</option>
+            <option value="150">150 kW</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="field-label" for="chargeStartTime">Départ de charge</label>
+          <input id="chargeStartTime" type="time" step="60" value="23:45" />
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Tarif</h2>
+      <div class="tariffs">
+        <button class="tariff-btn active" type="button" data-tariff="0.1589">
+          Heures creuses
+          <small>0,1589 €/kWh</small>
+        </button>
+
+        <button class="tariff-btn" type="button" data-tariff="0.2142">
+          Heures pleines
+          <small>0,2142 €/kWh</small>
+        </button>
+
+        <button class="tariff-btn" type="button" data-tariff="custom">
+          Autre prix
+          <small>0,2376 €/kWh</small>
+        </button>
+      </div>
+
+      <div class="custom-wrap" id="customWrap">
+        <input id="customPrice" type="number" step="0.0001" min="0" value="0.2376" inputmode="decimal" placeholder="Prix en €/kWh" />
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Résultats</h2>
+      <div class="results">
+        <div class="result">
+          <div class="caption">Énergie</div>
+          <div class="big" id="energyResult">46,2 kWh</div>
+        </div>
+
+        <div class="result">
+          <div class="caption">Durée</div>
+          <div class="big" id="timeResult">7 h 42</div>
+        </div>
+
+        <div class="result">
+          <div class="caption">Fin</div>
+          <div class="big" id="endTimeResult">—</div>
+        </div>
+
+        <div class="result highlight">
+          <div class="caption">Prix</div>
+          <div class="big" id="costResult">7,30 €</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card chart-card">
+      <h2>
+        <span>Courbe de charge</span>
+        <span class="meta" id="chartMeta">20 → 80 %</span>
+      </h2>
+      <div class="chart-wrap">
+        <svg class="chart-svg" id="chargeChart" viewBox="0 0 400 156" preserveAspectRatio="none" role="img" aria-label="Courbe du niveau de batterie en fonction du temps">
+          <g id="chartGrid"></g>
+          <path class="chart-area" id="chartArea"></path>
+          <polyline class="chart-line" id="chartLine" points=""></polyline>
+          <g id="chartDots"></g>
+          <g id="chartLabels"></g>
+          <g id="chartScrubber" class="chart-scrubber" visibility="hidden">
+            <line id="chartScrubberLine" class="chart-scrubber-line"></line>
+            <circle id="chartScrubberDot" class="chart-scrubber-dot" r="5"></circle>
+            <rect id="chartTooltipBg" class="chart-tooltip-bg" width="146" height="40" rx="8" ry="8"></rect>
+            <text id="chartTooltipTitle" class="chart-tooltip-title"></text>
+            <text id="chartTooltipSub" class="chart-tooltip-sub"></text>
+          </g>
+        </svg>
+      </div>
+    </section>
+  </div>
+ <div aria-labelledby="durationTitle" aria-modal="true" class="modal" id="durationModal" role="dialog">
+<section class="sheet">
+<div class="sheet-head">
+<h2 id="durationTitle">Calculer une durée</h2>
+<button aria-label="Fermer" class="close-btn" id="durationClose" type="button">×</button>
+</div>
+<div class="controls-grid">
+<div>
+<label class="field-label" for="durationStart">Heure de début</label>
+<input id="durationStart" step="60" type="time" value="22:00"/>
+</div>
+<div>
+<label class="field-label" for="durationEnd">Heure de fin</label>
+<input id="durationEnd" step="60" type="time" value="06:00"/>
+</div>
+</div>
+<div class="duration-result">
+<span>Durée</span>
+<strong id="durationResult">8 h</strong>
+</div>
+<p class="sheet-note">Si l'heure de fin est antérieure à l'heure de début, elle est considérée comme étant le lendemain.</p>
+</section>
+</div>
+</section>
+
+<section id="graphs" class="page">
+ <div class="panel">
+  <h2>Kilomètres parcourus et cible</h2>
+  <div id="kmChart" class="chart"><div class="empty">Ajoute au moins un relevé kilométrique pour afficher le graphe.</div></div>
+ </div>
+ <div class="panel">
+  <h2>Dépenses par mois</h2>
+  <div id="expenseChart" class="chart"><div class="empty">Enregistre des dépenses pour afficher le graphe.</div></div>
+ </div>
+</section>
+
+<section id="history" class="page">
+ <div class="panel"><div class="sectiontitle"><h2>Historique complet</h2><button class="secondary smallbtn" onclick="exportData()">Exporter</button></div><div id="allEntries" class="empty">Aucune opération enregistrée.</div>
+ <div class="actionrow"><button class="secondary" onclick="document.getElementById('importFile').click()">Importer une sauvegarde</button><button class="danger" onclick="clearData()">Tout effacer</button><input id="importFile" type="file" accept="application/json,.json" hidden></div>
+ <p class="notice">Exporte régulièrement une sauvegarde JSON et conserve-la dans Fichiers ou iCloud Drive. Les données sont enregistrées dans le stockage local de ce navigateur et ne se synchronisent pas automatiquement entre appareils.</p></div>
+ <div class="panel"><h2>Paramètres du contrat</h2><div class="entry"><span class="muted">Début</span><strong style="float:right">1 juin 2026</strong></div><div class="entry"><span class="muted">Fin</span><strong style="float:right">1 juin 2029</strong></div><div class="entry"><span class="muted">Forfait</span><strong style="float:right">45 000 km</strong></div><div class="entry"><span class="muted">Compteur à la livraison</span><strong id="historyStartOdo" style="float:right">0 km</strong></div><div class="entry"><span class="muted">Loyer mensuel</span><strong style="float:right">486,61 €</strong></div></div>
+</section>
+</main>
+<div class="footer">ID.4 Suivi LLD · Données conservées sur cet appareil</div>
+</div>
+<nav class="tabs" aria-label="Navigation">
+ <button class="tab active" data-page="home" onclick="showPage('home')"><span class="ico">⌂</span>Accueil</button>
+ <button class="tab" data-page="mileage" onclick="showPage('mileage')"><span class="ico">◷</span>Compteur</button>
+ <button class="tab" data-page="expenses" onclick="showPage('expenses')"><span class="ico">€</span>Dépenses</button>
+ <button class="tab" data-page="chargePage" onclick="showPage('chargePage')"><span class="ico">ϟ</span>Charge</button>
+ <button class="tab" data-page="graphs" onclick="showPage('graphs')"><span class="ico">▥</span>Graphes</button>
+ <button class="tab" data-page="history" onclick="showPage('history')"><span class="ico">▤</span>Historique</button>
+</nav>
+<script>
+const CONTRACT={start:'2026-06-01',end:'2029-06-01',km:45000,monthly:486.61,months:36};
+const STORE='id4-lld-v1';
+let data={mileage:[],expenses:[],startOdometer:0};
+const $=id=>document.getElementById(id);
+const fmt=n=>new Intl.NumberFormat('fr-FR',{maximumFractionDigits:0}).format(n);
+const eur=n=>new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR'}).format(n||0);
+const dateFmt=s=>new Date(s+'T12:00:00').toLocaleDateString('fr-FR',{day:'2-digit',month:'short',year:'numeric'});
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
+const day=s=>Date.parse(s+'T00:00:00Z')/86400000;
+const fmt1=n=>new Intl.NumberFormat('fr-FR',{maximumFractionDigits:1,minimumFractionDigits:0}).format(n);
+const monthFmt=m=>{const [y,mo]=m.split('-').map(Number);return new Date(y,mo-1,1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'})};
+function getStartOdometer(){return Math.max(0,Number(data.startOdometer??0)||0)}
+function load(){try{const x=JSON.parse(localStorage.getItem(STORE)||'{}');data={mileage:Array.isArray(x.mileage)?x.mileage:[],expenses:Array.isArray(x.expenses)?x.expenses:[],startOdometer:Math.max(0,Number.isFinite(Number(x.startOdometer??0))?Number(x.startOdometer??0):0)}}catch(e){data={mileage:[],expenses:[],startOdometer:0}}}
+function save(){localStorage.setItem(STORE,JSON.stringify(data));render()}
+function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.page===id));document.body.classList.toggle('charge-active',id==='chargePage');window.scrollTo({top:0,behavior:'auto'});render()}
+function orderedMileage(){return [...data.mileage].sort((a,b)=>a.date.localeCompare(b.date))}
+function allEntries(){return [...data.mileage.map(x=>({...x,kind:'km',sortDate:x.date})),...data.expenses.map(x=>({...x,kind:'expense',sortDate:x.date}))].sort((a,b)=>b.sortDate.localeCompare(a.sortDate))}
+function totalExpenses(){return data.expenses.reduce((s,x)=>s+Number(x.amount||0),0)}
+function entryHTML(x,withDelete=true){let title=x.kind==='km'?'Relevé compteur':x.type;let detail=x.kind==='km'?`${fmt(x.value)} km${x.note?' · '+esc(x.note):''}`:`${x.place?esc(x.place)+' · ':''}${x.kwh?esc(x.kwh)+' kWh · ':''}${x.note?esc(x.note):''}`;let amount=x.kind==='km'?'':`<div class="amount">${eur(x.amount)}</div>`;return `<div class="entry"><div class="entryhead"><div><strong>${title}</strong><div class="muted" style="font-size:12px;margin-top:4px">${dateFmt(x.date)}</div><div style="font-size:13px;margin-top:5px">${detail}</div></div><div>${amount}${withDelete?`<button class="danger smallbtn" style="margin-top:7px" onclick="deleteEntry('${x.kind}','${x.id}')">Supprimer</button>`:''}</div></div></div>`}
+function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function chartMileageItems(items){
+ const base=getStartOdometer();
+ // Le graphe doit représenter tous les relevés saisis depuis le début du contrat,
+ // y compris ceux datés dans le futur (par exemple des relevés prévus pour 2029).
+ // Le filtre <= today() est réservé au calcul de la projection à ce jour.
+ return items.filter(it=>it.date>=CONTRACT.start&&/^\d{4}-\d{2}-\d{2}$/.test(it.date))
+   .map(it=>({...it,driven:Math.max(0,Number(it.value)-base)}));
+}
+function svgLineChart(items){
+ const records=chartMileageItems(items);
+ if(!records.length)return '<div class="empty">Ajoute au moins un relevé pendant le contrat pour afficher le graphe.</div>';
+ const W=320,H=236,L=45,R=10,T=20,B=47,plotW=W-L-R,plotH=H-T-B;
+ const vals=records.map(x=>x.driven),tipData=esc(JSON.stringify(records.map(it=>({date:it.date,value:Number(it.value),driven:it.driven}))));let max=Math.max(CONTRACT.km,...vals,1);max=Math.ceil(max/5000)*5000;
+ // L'axe s'étend jusqu'au dernier relevé s'il est postérieur à la fin du contrat.
+ // La cible théorique, elle, conserve son point final au 1er juin 2029.
+ const domainEnd=records.reduce((latest,it)=>it.date>latest?it.date:latest,CONTRACT.end);
+ const domainSpan=Math.max(1,day(domainEnd)-day(CONTRACT.start));
+ const xDate=d=>L+Math.max(0,Math.min(1,(day(d)-day(CONTRACT.start))/domainSpan))*plotW;
+ const y=v=>T+plotH-(v/max)*plotH;
+ const startX=xDate(CONTRACT.start),endX=xDate(CONTRACT.end),startY=y(0),endY=y(CONTRACT.km);
+ let out=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Kilomètres parcourus pendant le contrat et trajectoire théorique" data-chart="km" data-domain-end="${domainEnd}" data-points="${tipData}">`;
+ for(let i=0;i<=4;i++){const v=max*i/4,yy=y(v),label=v===0?'0':`${fmt1(v/1000)}k`;out+=`<line class="gridline" x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}"/><text x="${L-6}" y="${yy+3}" text-anchor="end">${label}</text>`}
+ out+=`<line class="axis" x1="${L}" y1="${T+plotH}" x2="${W-R}" y2="${T+plotH}"/>`;
+ // Trajectoire théorique : 0 km au début du contrat, 45 000 km à son terme.
+ out+=`<path class="targetline" d="M ${startX} ${startY} L ${endX} ${endY}"/>`;
+ out+=`<path class="theory-hit" tabindex="0" role="button" aria-label="Toucher pour lire la trajectoire théorique" data-theory-line="true" d="M ${startX} ${startY} L ${endX} ${endY}"/>`;
+ out+=`<text x="${Math.max(L+65,endX-4)}" y="${Math.max(T+12,endY-8)}" text-anchor="end" class="legend">Cible : 45 000 km</text>`;
+ const points=records.map(it=>`${xDate(it.date)},${y(it.driven)}`).join(' ');if(records.length>1)out+=`<polyline class="kmline" points="${points}"/>`;
+ // Courbe de tendance prévisionnelle : elle utilise tous les relevés saisis pendant le contrat,
+ // y compris les relevés datés dans le futur. La projection de l'accueil, elle, reste calculée
+ // à partir des relevés jusqu'à aujourd'hui.
+ const projection=calculateProjection(items,true);
+ if(projection.last && Number.isFinite(projection.projected)){
+   const forecastStartX=xDate(projection.last.date), forecastStartY=y(Math.max(0,Number(projection.last.value)-getStartOdometer()));
+   const forecastEndX=xDate(CONTRACT.end), forecastEndY=y(projection.projected);
+   out+=`<path class="forecastline" d="M ${forecastStartX} ${forecastStartY} L ${forecastEndX} ${forecastEndY}" data-forecast-line="true"><title>Tendance prévisionnelle : ${fmt(Math.round(projection.projected))} km au terme du contrat</title></path>`;
+   const forecastTip=`Tendance prévisionnelle : ${fmt(Math.round(projection.projected))} km estimés au 1er juin 2029`;
+   const fx=Math.max(L+5,Math.min(W-R-5,forecastEndX-2)),fy=Math.max(T+12,forecastEndY-8);
+   out+=`<circle cx="${forecastEndX}" cy="${forecastEndY}" r="4" fill="#12a594" stroke="#ffffff" stroke-width="1.5" pointer-events="none"/><circle class="hit-target" tabindex="0" role="button" aria-label="${esc(forecastTip)}" data-tip="${esc(forecastTip)}" cx="${forecastEndX}" cy="${forecastEndY}" r="14"><title>${esc(forecastTip)}</title></circle>`;
+ }
+ records.forEach(it=>{const cx=xDate(it.date),cy=y(it.driven),tip=`${dateFmt(it.date)} — ${fmt(it.driven)} km parcourus (compteur : ${fmt(it.value)} km)`;out+=`<circle class="km-dot" cx="${cx}" cy="${cy}" r="5" pointer-events="none"/><circle class="hit-target" tabindex="0" role="button" aria-label="${esc(tip)}" data-tip="${esc(tip)}" cx="${cx}" cy="${cy}" r="14"><title>${esc(tip)}</title></circle>`});
+ const milestones=[];for(let year=2026;year<=Number(domainEnd.slice(0,4));year++){const d=`${year}-06-01`;if(d<=domainEnd)milestones.push({d,label:`juin ${String(year).slice(-2)}`})}
+ if(!milestones.length||milestones[0].d!==CONTRACT.start)milestones.unshift({d:CONTRACT.start,label:'juin 26'});
+ // Si l'axe a été prolongé au-delà d'une date anniversaire, ajoute un repère final si la place le permet.
+ const lastMilestone=milestones[milestones.length-1];
+ if(domainEnd>CONTRACT.end&&day(domainEnd)-day(lastMilestone.d)>100)milestones.push({d:domainEnd,label:dateFmt(domainEnd).replace(/\s*\d{4}$/,'')});
+ milestones.forEach((m,i)=>{const x=xDate(m.d),anchor=i===0?'start':i===milestones.length-1?'end':'middle';out+=`<line class="axis" x1="${x}" y1="${T+plotH}" x2="${x}" y2="${T+plotH+4}"/><text x="${x}" y="${H-23}" text-anchor="${anchor}" class="barlabel">${m.label}</text>`});
+ out+=`<text x="${L}" y="11" class="legend">Km parcourus</text><line x1="${W-115}" y1="10" x2="${W-100}" y2="10" class="forecastline"/><text x="${W-96}" y="13" class="legend">Prévision</text></svg><div class="chart-tip" aria-live="polite"></div>`;return out;
+}
+function svgExpenseChart(expenses){
+ if(!expenses.length)return '<div class="empty">Enregistre des dépenses pour afficher le graphe.</div>';
+ const sums={};expenses.forEach(e=>{const m=e.date.slice(0,7);sums[m]=(sums[m]||0)+Number(e.amount||0)});
+ const months=Object.keys(sums).sort().slice(-12);const values=months.map(m=>sums[m]);
+ const W=320,H=216,L=44,R=8,T=20,B=45,plotW=W-L-R,plotH=H-T-B;const max=Math.max(...values,1);const niceMax=max<=50?Math.max(10,Math.ceil(max/10)*10):Math.ceil(max/50)*50;
+ const slot=plotW/months.length,bw=Math.min(28,slot*.62),tipData=esc(JSON.stringify(months.map((month,i)=>({month,amount:values[i]}))));let out=`<svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Dépenses totales par mois" data-chart="expenses" data-points="${tipData}">`;
+ for(let i=0;i<=4;i++){const v=niceMax*i/4,yy=T+plotH-(v/niceMax)*plotH;out+=`<line class="gridline" x1="${L}" y1="${yy}" x2="${W-R}" y2="${yy}"/><text x="${L-6}" y="${yy+3}" text-anchor="end">${Math.round(v)}€</text>`}
+ months.forEach((m,i)=>{const h=values[i]/niceMax*plotH,x=L+i*slot+(slot-bw)/2,y=T+plotH-h,tip=`${monthFmt(m)} : ${eur(values[i])}`,hitX=L+i*slot;out+=`<rect class="barrect" pointer-events="none" x="${x}" y="${y}" width="${bw}" height="${Math.max(1,h)}" rx="4"/><rect class="hit-target" tabindex="0" role="button" aria-label="${esc(tip)}" data-tip="${esc(tip)}" x="${hitX}" y="${T}" width="${slot}" height="${plotH}"><title>${esc(tip)}</title></rect>`;if(months.length<=6||i===0||i===months.length-1||i===Math.floor(months.length/2))out+=`<text class="barlabel" x="${x+bw/2}" y="${H-19}" text-anchor="middle">${m.slice(5)}/${m.slice(2,4)}</text>`});
+ out+=`<text x="${L}" y="11" class="legend">Dépenses (€)</text><text x="${W-R}" y="${H-3}" text-anchor="end" class="legend">Mois</text></svg><div class="chart-tip" aria-live="polite"></div>`;return out;
+}
+function renderCharts(){
+ const ms=orderedMileage();
+ $('kmChart').innerHTML=svgLineChart(ms);
+ $('expenseChart').innerHTML=svgExpenseChart(data.expenses);
+ document.querySelectorAll('.chart [data-tip]').forEach(el=>{
+   const show=()=>{const tip=el.closest('.chart').querySelector('.chart-tip');if(tip)tip.textContent=el.getAttribute('data-tip')};
+   el.addEventListener('pointerdown',show);el.addEventListener('click',show);el.addEventListener('pointermove',e=>{if(e.pointerType==='touch')show()});
+   el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();show()}});
+ });
+ document.querySelectorAll('.chart [data-theory-line]').forEach(el=>{
+   const show=e=>{const svg=el.ownerSVGElement,rect=svg.getBoundingClientRect(),pointX=Math.max(45,Math.min(310,(e.clientX-rect.left)/rect.width*320));const fraction=Math.max(0,Math.min(1,(pointX-45)/(320-45)));const domainEnd=svg.getAttribute('data-domain-end')||CONTRACT.end;const domainSpan=Math.max(1,day(domainEnd)-day(CONTRACT.start));const dateDay=day(CONTRACT.start)+fraction*domainSpan;const contractSpan=day(CONTRACT.end)-day(CONTRACT.start);const contractFraction=Math.max(0,Math.min(1,(dateDay-day(CONTRACT.start))/contractSpan));const dt=new Date(dateDay*86400000);const ds=`${dt.getUTCFullYear()}-${String(dt.getUTCMonth()+1).padStart(2,'0')}-${String(dt.getUTCDate()).padStart(2,'0')}`;const tip=dateDay>=day(CONTRACT.end)?`Trajectoire théorique · fin du contrat le 1er juin 2029 : ${fmt(CONTRACT.km)} km${dateDay>day(CONTRACT.end)?` (axe prolongé jusqu’au ${dateFmt(domainEnd)})`:''}`:`Trajectoire théorique · ${dateFmt(ds)} : ${fmt(contractFraction*CONTRACT.km)} km parcourus`;const out=el.closest('.chart').querySelector('.chart-tip');if(out)out.textContent=tip};
+   el.addEventListener('pointerdown',show);el.addEventListener('pointermove',show);el.addEventListener('click',show);el.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();const out=el.closest('.chart').querySelector('.chart-tip');if(out)out.textContent='Trajectoire théorique : de 0 km au 1er juin 2026 à 45 000 km au 1er juin 2029.'}});
+ });
+ document.querySelectorAll('.chart svg[data-chart="km"]').forEach(svg=>{
+   const show=e=>{
+     if(e.target.closest('[data-theory-line]'))return;if(e.type!=='pointermove'&&e.target.closest('[data-tip]'))return;
+     const rect=svg.getBoundingClientRect(),x=(e.clientX-rect.left)/rect.width*320,y=(e.clientY-rect.top)/rect.height*236;
+     if(x<45||x>310||y<20||y>189)return;
+     const list=JSON.parse(svg.getAttribute('data-points')||'[]');if(!list.length)return;
+     const dayStart=day(CONTRACT.start),domainEnd=svg.getAttribute('data-domain-end')||CONTRACT.end,daySpan=Math.max(1,day(domainEnd)-dayStart);
+     const nearest=list.reduce((best,item)=>{const itemX=45+(day(item.date)-dayStart)/daySpan*275;return Math.abs(itemX-x)<Math.abs(45+(day(best.date)-dayStart)/daySpan*275-x)?item:best},list[0]);
+     const tip=`${dateFmt(nearest.date)} — ${fmt(nearest.driven)} km parcourus (compteur : ${fmt(nearest.value)} km)`;
+     const target=svg.closest('.chart').querySelector('.chart-tip');if(target)target.textContent=tip;
+   };
+   svg.addEventListener('pointerdown',show);svg.addEventListener('pointermove',show);svg.addEventListener('click',show);
+ });
+ document.querySelectorAll('.chart svg[data-chart="km"]').forEach(svg=>{
+   let pinchStartDistance=0, pinchStartScale=1, scale=1;
+   const distance=(a,b)=>Math.hypot(a.clientX-b.clientX,a.clientY-b.clientY);
+   svg.style.transformOrigin='50% 50%';
+   svg.style.transition='transform .05s linear';
+   svg.style.touchAction='pan-y pinch-zoom';
+   svg.addEventListener('touchstart',e=>{
+     if(e.touches.length===2){
+       pinchStartDistance=distance(e.touches[0],e.touches[1]);
+       pinchStartScale=scale;
+     }
+   },{passive:true});
+   svg.addEventListener('touchmove',e=>{
+     if(e.touches.length===2&&pinchStartDistance>0){
+       const next=pinchStartScale*distance(e.touches[0],e.touches[1])/pinchStartDistance;
+       scale=Math.max(1,Math.min(3,next));
+       svg.style.transform=`scale(${scale})`;
+       e.preventDefault();
+     }
+   },{passive:false});
+   svg.addEventListener('touchend',e=>{if(e.touches.length<2)pinchStartDistance=0;},{passive:true});
+   svg.addEventListener('dblclick',()=>{scale=1;svg.style.transform='scale(1)'});
+ });
+ document.querySelectorAll('.chart svg[data-chart="expenses"]').forEach(svg=>{
+   const show=e=>{if(e.type!=='pointermove'&&e.target.closest('[data-tip]'))return;const rect=svg.getBoundingClientRect(),x=(e.clientX-rect.left)/rect.width*320;if(x<44||x>312)return;const list=JSON.parse(svg.getAttribute('data-points')||'[]');if(!list.length)return;const index=Math.max(0,Math.min(list.length-1,Math.floor((x-44)/(320-44)*list.length)));const point=list[index],tip=`${monthFmt(point.month)} : ${eur(point.amount)}`,target=svg.closest('.chart').querySelector('.chart-tip');if(target)target.textContent=tip};
+   svg.addEventListener('pointerdown',show);svg.addEventListener('pointermove',show);svg.addEventListener('click',show);
+ });
+}
+function calculateProjection(ms, includeFuture=false){
+ // Par défaut, la projection de l'accueil utilise uniquement les relevés datés jusqu'à aujourd'hui.
+ // La courbe du graphe peut demander includeFuture=true pour tenir compte de tous les relevés saisis.
+ // Le dernier relevé saisi reste par ailleurs la référence pour le compteur et la marge affichés.
+ const allContractReadings=ms.filter(x=>x.date>=CONTRACT.start&&x.date<=CONTRACT.end&&/^\d{4}-\d{2}-\d{2}$/.test(x.date)&&Number.isFinite(Number(x.value))).sort((a,b)=>a.date.localeCompare(b.date));
+ const lastRecorded=allContractReadings.length?allContractReadings[allContractReadings.length-1]:null;
+ const base=getStartOdometer();
+ const lastRecordedDriven=lastRecorded?Math.max(0,Number(lastRecorded.value)-base):0;
+ const lastRecordedElapsedDays=lastRecorded?Math.max(0,Math.min(day(lastRecorded.date),day(CONTRACT.end))-day(CONTRACT.start)):0;
+ const lastRecordedTheoretical=CONTRACT.km*lastRecordedElapsedDays/(day(CONTRACT.end)-day(CONTRACT.start));
+ const lastRecordedTargetDelta=lastRecorded?lastRecordedTheoretical-lastRecordedDriven:0;
+ const readings=includeFuture?allContractReadings:allContractReadings.filter(x=>x.date<=today());
+ if(!readings.length)return {readings,last:null,lastRecorded,lastRecordedDriven,lastRecordedElapsedDays,lastRecordedTheoretical,lastRecordedTargetDelta,pace:null,base};
+ const last=readings[readings.length-1],driven=Math.max(0,Number(last.value)-base);
+ const elapsedDays=Math.max(0,day(last.date)-day(CONTRACT.start));
+ const remainingDays=Math.max(0,day(CONTRACT.end)-day(last.date));
+ // Tendance globale : calculée à partir du dernier relevé non futur.
+ const globalPace=elapsedDays>0?driven/elapsedDays:null;
+ // Tendance récente : régression linéaire sur les relevés des 120 derniers jours.
+ const recentReadings=readings.filter(x=>day(last.date)-day(x.date)<=120&&day(last.date)-day(x.date)>=0);
+ const recentSpan=recentReadings.length>=2?day(recentReadings[recentReadings.length-1].date)-day(recentReadings[0].date):0;
+ let recentPace=null;
+ if(recentReadings.length>=2&&recentSpan>=30){
+  const xs=recentReadings.map(x=>day(x.date)-day(recentReadings[0].date));
+  const ys=recentReadings.map(x=>Number(x.value));
+  const mx=xs.reduce((s,v)=>s+v,0)/xs.length,my=ys.reduce((s,v)=>s+v,0)/ys.length;
+  const denom=xs.reduce((s,x)=>s+(x-mx)**2,0);
+  const slope=denom>0?xs.reduce((s,x,i)=>s+(x-mx)*(ys[i]-my),0)/denom:null;
+  if(slope!==null&&Number.isFinite(slope)&&slope>=0)recentPace=slope;
+ }
+ const pace=globalPace===null?recentPace:recentPace===null?globalPace:globalPace*.6+recentPace*.4;
+ const theoreticalAtRead=CONTRACT.km*Math.max(0,Math.min(1,elapsedDays/(day(CONTRACT.end)-day(CONTRACT.start))));
+ const targetDelta=theoreticalAtRead-driven;
+ if(pace===null)return {readings,last,lastRecorded,lastRecordedDriven,lastRecordedElapsedDays,lastRecordedTheoretical,lastRecordedTargetDelta,base,driven,elapsedDays,remainingDays,globalPace,recentPace,recentReadings,recentSpan,pace:null,theoreticalAtRead,targetDelta};
+ const projected=driven+pace*remainingDays;
+ // Fourchette indicative, identique à la version précédente.
+ const spread=remainingDays===0?0:(globalPace!==null&&recentPace!==null?Math.max(250,Math.abs(globalPace-recentPace)*remainingDays*.5):Math.max(250,projected*.05));
+ return {readings,last,lastRecorded,lastRecordedDriven,lastRecordedElapsedDays,lastRecordedTheoretical,lastRecordedTargetDelta,base,driven,elapsedDays,remainingDays,globalPace,recentPace,recentReadings,recentSpan,pace,projected,spread,low:Math.max(driven,projected-spread),high:projected+spread,theoreticalAtRead,targetDelta};
+}
+function projectionDetailHTML(c){
+ const row=(label,value)=>`<div class="calc-row"><span class="calc-label">${label}</span><span class="calc-value">${value}</span></div>`;
+ if(!c.last){
+  const startInfo=`<p>Compteur initial enregistré : <b>${fmt(getStartOdometer())} km</b>. Le forfait porte sur la différence entre le compteur relevé et cette valeur de départ.</p>`;
+  if(c.lastRecorded)return `<strong>Détail de la projection</strong><p>Le dernier relevé saisi est daté du ${dateFmt(c.lastRecorded.date)} (${fmt(c.lastRecordedDriven)} km parcourus depuis la livraison). Sa marge par rapport à la cible à cette date est de ${c.lastRecordedTargetDelta>=0?'+':''}${fmt(Math.round(c.lastRecordedTargetDelta))} km.</p><p>Aucun relevé daté jusqu’à aujourd’hui (${dateFmt(today())}) n’est disponible pour calculer une projection actuelle. Le relevé futur sert à calculer la marge affichée sur l’accueil, mais pas à traiter les kilomètres futurs comme déjà parcourus aujourd’hui.</p>${startInfo}`;
+  return `<strong>Détail de la projection</strong><p>Aucun relevé daté pendant le contrat n’est disponible. Ajoute un relevé compris entre le 1er juin 2026 et le 1er juin 2029.</p>${startInfo}`;
+ }
+ let html=`<strong>Détail du calcul — données jusqu’au ${dateFmt(c.last.date)}</strong>`;
+ if(c.lastRecorded&&c.lastRecorded.date>c.last.date){html+=`<p>Dernier relevé saisi : ${dateFmt(c.lastRecorded.date)}, compteur ${fmt(c.lastRecorded.value)} km. Il est pris en compte dans le compteur et la marge de l’accueil. La projection ci-dessous reste calculée avec les relevés datés jusqu’à aujourd’hui (${dateFmt(today())}).</p>`;}
+ html+=row('Compteur à la livraison',`${fmt(c.base)} km`);
+ html+=row('Dernier compteur relevé',`${fmt(c.last.value)} km`);
+ html+=row('Kilomètres parcourus sous contrat',`${fmt(c.driven)} km`);
+ html+=row('Jours écoulés depuis le début',`${fmt(c.elapsedDays)} jours`);
+ html+=row('Jours restants au contrat',`${fmt(c.remainingDays)} jours`);
+ html+=row('Tendance globale',c.globalPace===null?'Non calculable à cette date':`${fmt1(c.globalPace)} km/jour`);
+ html+=row('Tendance récente',c.recentPace===null?'Indisponible : il faut au moins 2 relevés espacés de 30 jours dans les 120 derniers jours':`${fmt1(c.recentPace)} km/jour (${c.recentReadings.length} relevés sur ${fmt(c.recentSpan)} jours)`);
+ html+=row('Cible théorique à cette date',`${fmt(Math.round(c.theoreticalAtRead))} km`);
+ html+=row('Marge par rapport à la cible',`${c.targetDelta>=0?'+':''}${fmt(Math.round(c.targetDelta))} km`);
+ if(c.pace===null)return html+'<p>La projection fin de contrat sera disponible dès que les données permettent de calculer un rythme journalier.</p>';
+ html+=row('Rythme retenu',`${fmt1(c.pace)} km/jour`);
+ if(c.globalPace!==null&&c.recentPace!==null){
+  html+=row('Pondération mixte',`60 % global + 40 % récent`);
+  html+=row('Calcul du rythme',`(0,6 × ${fmt1(c.globalPace)}) + (0,4 × ${fmt1(c.recentPace)}) = ${fmt1(c.pace)} km/jour`);
+ }else html+=`<p>Une seule tendance est exploitable pour le moment; elle est utilisée seule jusqu’à l’ajout d’un historique récent suffisant.</p>`;
+ html+=`<p>Formule de projection : kilomètres parcourus + (rythme retenu × jours restants).</p>`;
+ html+=row('Calcul fin de contrat',`${fmt(c.driven)} + (${fmt1(c.pace)} × ${fmt(c.remainingDays)})`);
+ html+=row('Projection centrale',`${fmt(Math.round(c.projected))} km`);
+ html+=row('Fourchette indicative',`${fmt(Math.round(c.low))} à ${fmt(Math.round(c.high))} km`);
+ if(c.globalPace!==null&&c.recentPace!==null)html+=`<p>La marge d’incertitude augmente avec l’écart entre les tendances globale et récente; elle reste au minimum de 250 km tant qu’il reste du contrat.</p>`;
+ else html+=`<p>Faute de deux tendances indépendantes, la fourchette utilise 5 % de la projection, avec une marge minimale de 250 km.</p>`;
+ html+=row('Forfait prévu au contrat',`${fmt(CONTRACT.km)} km`);
+ const balance=CONTRACT.km-c.projected;
+ html+=row(balance>=0?'Marge centrale estimée au terme':'Dépassement central estimé au terme',`${balance>=0?'+':''}${fmt(Math.round(balance))} km`);
+ html+=`<p class="notice">Cette estimation repose sur les relevés saisis et suppose que les rythmes observés restent représentatifs. La fourchette n’est pas une garantie contractuelle.</p>`;
+ return html;
+}
+function setProjectionDetails(open){const panel=$('projectionDetail'),tap=$('projectionTap');panel.hidden=!open;tap.setAttribute('aria-expanded',String(open));if(open&&lastProjectionCalc)panel.innerHTML=projectionDetailHTML(lastProjectionCalc);}
+let lastProjectionCalc=null,projectionHoldTimer=null,projectionLongPress=false;
+function setupProjectionTap(){const tap=$('projectionTap');tap.addEventListener('pointerdown',()=>{projectionLongPress=false;clearTimeout(projectionHoldTimer);projectionHoldTimer=setTimeout(()=>{projectionLongPress=true;setProjectionDetails(true)},450)});['pointerup','pointerleave','pointercancel'].forEach(ev=>tap.addEventListener(ev,()=>clearTimeout(projectionHoldTimer)));tap.addEventListener('click',()=>{if(projectionLongPress){projectionLongPress=false;return}setProjectionDetails($('projectionDetail').hidden)});tap.addEventListener('keydown',e=>{if(e.key==='Escape')setProjectionDetails(false)});}
+function render(){
+ const ms=orderedMileage(),calc=calculateProjection(ms),last=calc.lastRecorded,km=last?Number(last.value):null,driven=last?calc.lastRecordedDriven:0,remaining=CONTRACT.km-driven;
+ $('currentKm').innerHTML=km===null?'— <span class="unit">km</span>':`${fmt(km)} <span class="unit">km</span>`;
+ $('remaining').textContent=`${fmt(Math.max(0,remaining))} km`; $('kmBar').style.width=Math.max(0,Math.min(100,driven/CONTRACT.km*100))+'%'; $('historyStartOdo').textContent=`${fmt(getStartOdometer())} km`;
+ let status=$('kmStatus');status.className='status';
+ const lastDateLabel=last?(last.date===today()?'ce jour':`au relevé du ${dateFmt(last.date)}`):'';
+ if(km===null){status.textContent='Ajoute ton premier relevé pendant le contrat'}
+ else if(remaining<0){status.classList.add('bad');status.textContent=`Forfait dépassé de ${fmt(-remaining)} km · ${lastDateLabel}`}
+ else if(calc.lastRecordedTargetDelta<0){status.classList.add('warn');status.textContent=`Dépassé de ${fmt(-calc.lastRecordedTargetDelta)} km par rapport à la cible · ${lastDateLabel}`}
+ else {status.textContent=`Forfait respecté · marge cible : ${fmt(Math.round(calc.lastRecordedTargetDelta))} km · ${lastDateLabel}`}
+ lastProjectionCalc=calc;
+ if(calc.last&&calc.pace!==null){$('projection').textContent=fmt(Math.round(calc.projected))+' km';$('projectionHint').textContent=`Fourchette : ${fmt(Math.round(calc.low))}–${fmt(Math.round(calc.high))} km · ${calc.projected>CONTRACT.km?'dépassement estimé '+fmt(Math.round(calc.projected-CONTRACT.km))+' km':'marge estimée '+fmt(Math.round(CONTRACT.km-calc.projected))+' km'}`;if(last&&last.date>calc.last.date)$('projectionHint').textContent+=` · Projection calculée jusqu’au ${dateFmt(calc.last.date)}`}
+ else{$('projection').textContent='À calculer';$('projectionHint').textContent='Toucher pour le détail du calcul'}
+ if(!$('projectionDetail').hidden)$('projectionDetail').innerHTML=projectionDetailHTML(calc);
+ if(document.activeElement!==$('startOdoValue'))$('startOdoValue').value=String(getStartOdometer());
+ const total=totalExpenses();$('totalSpend').textContent=eur(total);$('grandTotal').textContent=eur(CONTRACT.monthly*CONTRACT.months+total);
+ const charges=data.expenses.filter(x=>x.type.startsWith('Recharge'));const chargeSum=charges.reduce((s,x)=>s+Number(x.amount||0),0);const other=total-chargeSum;const kwh=charges.reduce((s,x)=>s+Number(x.kwh||0),0);
+ $('chargeTotal').textContent=eur(chargeSum);$('otherTotal').textContent=eur(other);$('totalKwh').textContent=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:1}).format(kwh)+' kWh';$('avgKwh').textContent=kwh?eur(chargeSum/kwh)+'/kWh':'—';
+ const entries=allEntries();$('allEntries').innerHTML=entries.length?entries.map(x=>entryHTML(x)).join(''):'<div class="empty">Aucune opération enregistrée.</div>';
+ renderCharts();
+}
+$('startOdoForm').addEventListener('submit',e=>{e.preventDefault();const value=Number($('startOdoValue').value);if(!Number.isFinite(value)||value<0||!Number.isInteger(value)){alert('Saisis un kilométrage initial entier et positif.');return}const active=orderedMileage().filter(x=>x.date>=CONTRACT.start&&x.date<=CONTRACT.end);if(active.some(x=>Number(x.value)<value)){alert('Le compteur initial ne peut pas dépasser un relevé déjà saisi pendant le contrat. Corrige ce relevé ou vérifie le compteur à la livraison.');return}data.startOdometer=value;save();alert('Compteur initial enregistré. Le calcul du forfait et les graphes ont été actualisés.');});
+$('kmForm').addEventListener('submit',e=>{e.preventDefault();const date=$('kmDate').value,value=Number($('kmValue').value),ms=orderedMileage();const prev=ms.filter(x=>x.date<=date).at(-1);const next=ms.find(x=>x.date>date);if(prev&&value<prev.value){alert('Le compteur ne peut pas être inférieur au relevé précédent.');return}if(next&&value>next.value){alert('Ce relevé dépasse un relevé ultérieur. Vérifie la date et la valeur.');return}const existing=data.mileage.findIndex(x=>x.date===date);const item={id:existing>=0?data.mileage[existing].id:crypto.randomUUID(),date,value,note:$('kmNote').value.trim()};if(existing>=0)data.mileage[existing]=item;else data.mileage.push(item);$('kmValue').value='';$('kmNote').value='';save();alert('Relevé enregistré.');showPage('mileage')});
+$('expenseForm').addEventListener('submit',e=>{e.preventDefault();data.expenses.push({id:crypto.randomUUID(),type:$('expType').value,date:$('expDate').value,amount:Number($('expAmount').value),kwh:$('expKwh').value?Number($('expKwh').value):0,place:$('expPlace').value.trim(),note:$('expNote').value.trim()});$('expAmount').value='';$('expKwh').value='';$('expPlace').value='';$('expNote').value='';save();alert('Dépense enregistrée.');showPage('expenses')});
+function deleteEntry(kind,id){if(!confirm('Supprimer définitivement cette entrée ?'))return;if(kind==='km')data.mileage=data.mileage.filter(x=>x.id!==id);else data.expenses=data.expenses.filter(x=>x.id!==id);save()}
+function exportData(){const blob=new Blob([JSON.stringify({version:1,contract:CONTRACT,...data},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sauvegarde-id4-lld-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)}
+$('importFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!Array.isArray(x.mileage)||!Array.isArray(x.expenses))throw Error();if(!confirm('Remplacer les données actuelles par celles de cette sauvegarde ?'))return;data={mileage:x.mileage,expenses:x.expenses,startOdometer:Math.max(0,Number(x.startOdometer)||0)};save();alert('Sauvegarde importée.')}catch(err){alert('Fichier de sauvegarde invalide.')}e.target.value=''});
+function clearData(){if(confirm('Effacer tous les relevés et toutes les dépenses de cet appareil ? Pense à exporter une sauvegarde avant.')){data={mileage:[],expenses:[],startOdometer:0};save()}}
+$('kmDate').value=today();$('expDate').value=today();setupProjectionTap();
+load();render();
+if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(()=>{});
+</script>
+
+<script>
+/* Calculateur de recharge intégré à l’interface ID.4; logique de calcul issue du fichier fourni. */
+(function(){
+const BATTERY = 77;
+    const DC_TAPER_START = 80;
+    const DC_END_POWER_FACTOR = 0.20;
+    const DC_TAPER_SLOPE = (1 - DC_END_POWER_FACTOR) / (100 - DC_TAPER_START);
+    const DC_POWERS = new Set([50, 150]);
+
+    const startLevel = document.getElementById("startLevel");
+    const endLevel = document.getElementById("endLevel");
+    const startValue = document.getElementById("startValue");
+    const endValue = document.getElementById("endValue");
+    const power = document.getElementById("power");
+    const chargeStartTime = document.getElementById("chargeStartTime");
+    const tariffButtons = document.querySelectorAll(".tariff-btn");
+    const customWrap = document.getElementById("customWrap");
+    const customPrice = document.getElementById("customPrice");
+    const energyResult = document.getElementById("energyResult");
+    const timeResult = document.getElementById("timeResult");
+    const endTimeResult = document.getElementById("endTimeResult");
+    const costResult = document.getElementById("costResult");
+    const rangeError = document.getElementById("rangeError");
+    const chartMeta = document.getElementById("chartMeta");
+    const chartGrid = document.getElementById("chartGrid");
+    const chartArea = document.getElementById("chartArea");
+    const chartLine = document.getElementById("chartLine");
+    const chartDots = document.getElementById("chartDots");
+    const chartLabels = document.getElementById("chartLabels");
+    const chargeChart = document.getElementById("chargeChart");
+    const chartScrubber = document.getElementById("chartScrubber");
+    const chartScrubberLine = document.getElementById("chartScrubberLine");
+    const chartScrubberDot = document.getElementById("chartScrubberDot");
+    const chartTooltipBg = document.getElementById("chartTooltipBg");
+    const chartTooltipTitle = document.getElementById("chartTooltipTitle");
+    const chartTooltipSub = document.getElementById("chartTooltipSub");
+
+    const durationModal = document.getElementById("durationModal");
+    const durationOpen = document.getElementById("durationOpen");
+    const durationClose = document.getElementById("durationClose");
+    const durationStart = document.getElementById("durationStart");
+    const durationEnd = document.getElementById("durationEnd");
+    const durationResult = document.getElementById("durationResult");
+
+    let selectedTariff = 0.1589;
+    let chartPlotState = null;
+    let activeChartPointer = null;
+
+    function fr(value, decimals = 2) {
+      return value.toLocaleString("fr-FR", {
+        minimumFractionDigits: decimals,
+        maximumFractionDigits: decimals
+      });
+    }
+
+    function getTariff() {
+      if (selectedTariff === "custom") {
+        return parseFloat(customPrice.value) || 0;
+      }
+      return Number(selectedTariff);
+    }
+
+    function formatDurationMinutes(totalMinutes, compact = false) {
+      const minutes = Math.max(0, Math.round(totalMinutes));
+      const h = Math.floor(minutes / 60);
+      const m = minutes % 60;
+
+      if (h === 0) return `${m} min`;
+      if (m === 0) return `${h} h`;
+      if (compact) return `${h} h ${String(m).padStart(2, "0")}`;
+      return `${h} h ${String(m).padStart(2, "0")} min`;
+    }
+
+    function timeToMinutes(value) {
+      if (!value || !value.includes(":")) return null;
+      const [h, m] = value.split(":").map(Number);
+      if (!Number.isFinite(h) || !Number.isFinite(m)) return null;
+      return h * 60 + m;
+    }
+
+    function minutesToClock(totalMinutes) {
+      const rounded = Math.round(totalMinutes);
+      const days = Math.floor(rounded / 1440);
+      const minuteOfDay = ((rounded % 1440) + 1440) % 1440;
+      const h = Math.floor(minuteOfDay / 60);
+      const m = minuteOfDay % 60;
+      const clock = `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+      return days > 0 ? `${clock} +${days}j` : clock;
+    }
+
+    /*
+      Modèle de charge utilisé par l'application :
+
+      1) Puissances AC (2,3 à 22 kW dans cette interface)
+         La puissance est supposée constante. La conservation de l'énergie donne :
+
+           t = E / P
+           SOC(t) = SOC0 + 100 × P × t / BATTERY
+
+         La courbe SOC/temps est donc linéaire dans ce modèle simplifié.
+
+      2) Puissances DC (50 et 150 kW dans cette interface)
+         Jusqu'à 80 %, la puissance sélectionnée est supposée disponible. Au-delà de 80 %,
+         l'application utilise une courbe P(SOC) générique de tapering : la puissance décroît
+         linéairement de 100 % de la puissance sélectionnée à 80 % de SOC jusqu'à 20 % de
+         cette puissance à 100 % de SOC. Il s'agit explicitement d'une estimation générique,
+         et non de la courbe constructeur d'un véhicule précis.
+
+         Le temps est calculé en intégrant dE / P(SOC). Le graphique et le curseur utilisent
+         exactement le même modèle, ce qui garantit leur cohérence avec la durée affichée.
+    */
+    function isDcCharge(chargingPower) {
+      return DC_POWERS.has(Number(chargingPower));
+    }
+
+    function dcPowerFactorAtSoc(soc) {
+      if (soc <= DC_TAPER_START) return 1;
+      const factor = 1 - DC_TAPER_SLOPE * (soc - DC_TAPER_START);
+      return Math.max(DC_END_POWER_FACTOR, factor);
+    }
+
+    function chargingTimeHours(startSoc, endSoc, chargingPower) {
+      if (endSoc <= startSoc || chargingPower <= 0) return 0;
+
+      // AC : puissance constante sur toute la plage de SOC.
+      if (!isDcCharge(chargingPower)) {
+        const energy = BATTERY * (endSoc - startSoc) / 100;
+        return energy / chargingPower;
+      }
+
+      let hours = 0;
+
+      // DC, phase à puissance constante jusqu'à 80 %.
+      if (startSoc < DC_TAPER_START) {
+        const linearEnd = Math.min(endSoc, DC_TAPER_START);
+        if (linearEnd > startSoc) {
+          const linearEnergy = BATTERY * (linearEnd - startSoc) / 100;
+          hours += linearEnergy / chargingPower;
+        }
+      }
+
+      // DC, tapering générique au-delà de 80 %.
+      if (endSoc > DC_TAPER_START) {
+        const taperStart = Math.max(startSoc, DC_TAPER_START);
+        const factorStart = dcPowerFactorAtSoc(taperStart);
+        const factorEnd = dcPowerFactorAtSoc(endSoc);
+
+        // Intégrale exacte de dSOC / P(SOC) pour une puissance qui décroît linéairement.
+        hours += BATTERY / (100 * chargingPower * DC_TAPER_SLOPE) *
+          Math.log(factorStart / factorEnd);
+      }
+
+      return hours;
+    }
+
+    function chargingSocAtHours(startSoc, endSoc, chargingPower, elapsedHours) {
+      const totalHours = chargingTimeHours(startSoc, endSoc, chargingPower);
+      if (totalHours <= 0 || endSoc <= startSoc) return startSoc;
+
+      const t = Math.min(Math.max(elapsedHours, 0), totalHours);
+      if (t >= totalHours) return endSoc;
+
+      // AC : inversion directe de t = E/P.
+      if (!isDcCharge(chargingPower)) {
+        const soc = startSoc + 100 * chargingPower * t / BATTERY;
+        return Math.min(endSoc, Math.max(startSoc, soc));
+      }
+
+      let remainingTime = t;
+
+      // DC : première phase linéaire jusqu'à 80 %, si elle fait partie de la recharge.
+      if (startSoc < DC_TAPER_START) {
+        const linearEnd = Math.min(endSoc, DC_TAPER_START);
+        const linearHours = BATTERY * (linearEnd - startSoc) / (100 * chargingPower);
+
+        if (remainingTime <= linearHours || endSoc <= DC_TAPER_START) {
+          const soc = startSoc + 100 * chargingPower * remainingTime / BATTERY;
+          return Math.min(endSoc, Math.max(startSoc, soc));
+        }
+        remainingTime -= linearHours;
+      }
+
+      // DC : inversion analytique de l'intégrale de la phase de tapering.
+      const taperStart = Math.max(startSoc, DC_TAPER_START);
+      const factorStart = dcPowerFactorAtSoc(taperStart);
+      const decay = 100 * chargingPower * DC_TAPER_SLOPE / BATTERY;
+      const factor = factorStart * Math.exp(-decay * remainingTime);
+      const soc = DC_TAPER_START + (1 - factor) / DC_TAPER_SLOPE;
+
+      return Math.min(endSoc, Math.max(startSoc, soc));
+    }
+
+    function svgElement(name, attrs = {}, text = "") {
+      const el = document.createElementNS("http://www.w3.org/2000/svg", name);
+      Object.entries(attrs).forEach(([key, value]) => el.setAttribute(key, value));
+      if (text) el.textContent = text;
+      return el;
+    }
+
+    function hideChartScrubber() {
+      chartScrubber.setAttribute("visibility", "hidden");
+    }
+
+    function showChartScrubberAt(clientX) {
+      if (!chartPlotState) return;
+
+      const rect = chargeChart.getBoundingClientRect();
+      if (!(rect.width > 0)) return;
+
+      const {
+        W, left, top, plotW, plotH, baseY,
+        startSoc, endSoc, chargingPower, totalHours
+      } = chartPlotState;
+
+      const svgX = (clientX - rect.left) * W / rect.width;
+      const x = Math.min(left + plotW, Math.max(left, svgX));
+      const ratio = (x - left) / plotW;
+      const elapsedHours = totalHours * ratio;
+      const soc = chargingSocAtHours(startSoc, endSoc, chargingPower, elapsedHours);
+      const y = top + (100 - soc) / 100 * plotH;
+
+      const startMinutes = timeToMinutes(chargeStartTime.value);
+      const clock = startMinutes === null
+        ? "--:--"
+        : minutesToClock(startMinutes + elapsedHours * 60);
+
+      chartScrubberLine.setAttribute("x1", x);
+      chartScrubberLine.setAttribute("x2", x);
+      chartScrubberLine.setAttribute("y1", top);
+      chartScrubberLine.setAttribute("y2", baseY);
+
+      chartScrubberDot.setAttribute("cx", x);
+      chartScrubberDot.setAttribute("cy", y);
+
+      const bubbleW = 146;
+      const bubbleH = 40;
+      let bubbleX = x - bubbleW / 2;
+      bubbleX = Math.max(left + 2, Math.min(left + plotW - bubbleW - 2, bubbleX));
+
+      let bubbleY = y - bubbleH - 9;
+      if (bubbleY < top + 1) bubbleY = y + 9;
+      bubbleY = Math.min(baseY - bubbleH - 2, bubbleY);
+
+      chartTooltipBg.setAttribute("x", bubbleX);
+      chartTooltipBg.setAttribute("y", bubbleY);
+      chartTooltipTitle.setAttribute("x", bubbleX + 9);
+      chartTooltipTitle.setAttribute("y", bubbleY + 15);
+      chartTooltipSub.setAttribute("x", bubbleX + 9);
+      chartTooltipSub.setAttribute("y", bubbleY + 31);
+
+      chartTooltipTitle.textContent = `${fr(soc, 1)} % · ${clock}`;
+      chartTooltipSub.textContent = `${formatDurationMinutes(elapsedHours * 60, true)} écoulé`;
+      chartScrubber.setAttribute("visibility", "visible");
+    }
+
+    function updateChargeChart(startSoc, endSoc, chargingPower, totalHours) {
+      const W = 400;
+      const H = 156;
+      const left = 34;
+      const right = 9;
+      const top = 8;
+      const bottom = 24;
+      const plotW = W - left - right;
+      const plotH = H - top - bottom;
+      const baseY = top + plotH;
+
+      chartGrid.replaceChildren();
+      chartDots.replaceChildren();
+      chartLabels.replaceChildren();
+      hideChartScrubber();
+      chartMeta.textContent = `${startSoc} → ${endSoc} % · ${isDcCharge(chargingPower) ? "DC estimée" : "AC · P cste"}`;
+
+      if (!(totalHours > 0) || endSoc <= startSoc) {
+        chartPlotState = null;
+        chartLine.setAttribute("points", "");
+        chartArea.setAttribute("d", "");
+        return;
+      }
+
+      chartPlotState = {
+        W, H, left, right, top, bottom, plotW, plotH, baseY,
+        startSoc, endSoc, chargingPower, totalHours
+      };
+
+      const xFor = hours => left + (hours / totalHours) * plotW;
+      const yFor = soc => top + (100 - soc) / 100 * plotH;
+
+      // Grille SOC 0 / 50 / 100 %.
+      [0, 50, 100].forEach(soc => {
+        const y = yFor(soc);
+        chartGrid.appendChild(svgElement("line", {
+          x1: left, y1: y, x2: left + plotW, y2: y, class: "chart-grid"
+        }));
+        chartLabels.appendChild(svgElement("text", {
+          x: left - 5, y: y + 3.5, "text-anchor": "end", class: "chart-text"
+        }, `${soc}%`));
+      });
+
+      if (isDcCharge(chargingPower) && startSoc < DC_TAPER_START && endSoc > DC_TAPER_START) {
+        const y80 = yFor(DC_TAPER_START);
+        chartGrid.appendChild(svgElement("line", {
+          x1: left, y1: y80, x2: left + plotW, y2: y80, class: "chart-threshold"
+        }));
+        chartLabels.appendChild(svgElement("text", {
+          x: left + plotW - 2, y: y80 - 4, "text-anchor": "end", class: "chart-text"
+        }, "taper 80%"));
+      }
+
+
+      const samples = 72;
+      const points = [];
+      for (let i = 0; i <= samples; i++) {
+        const elapsed = totalHours * i / samples;
+        const soc = chargingSocAtHours(startSoc, endSoc, chargingPower, elapsed);
+        points.push([xFor(elapsed), yFor(soc)]);
+      }
+
+      chartLine.setAttribute("points", points.map(([x, y]) => `${x.toFixed(2)},${y.toFixed(2)}`).join(" "));
+
+      const first = points[0];
+      const last = points[points.length - 1];
+      const areaPath = [
+        `M ${first[0].toFixed(2)} ${baseY.toFixed(2)}`,
+        `L ${first[0].toFixed(2)} ${first[1].toFixed(2)}`,
+        ...points.slice(1).map(([x, y]) => `L ${x.toFixed(2)} ${y.toFixed(2)}`),
+        `L ${last[0].toFixed(2)} ${baseY.toFixed(2)}`,
+        "Z"
+      ].join(" ");
+      chartArea.setAttribute("d", areaPath);
+
+      chartDots.appendChild(svgElement("circle", {
+        cx: first[0], cy: first[1], r: 4, class: "chart-dot"
+      }));
+      chartDots.appendChild(svgElement("circle", {
+        cx: last[0], cy: last[1], r: 4, class: "chart-dot"
+      }));
+
+      chartLabels.appendChild(svgElement("text", {
+        x: left, y: H - 5, "text-anchor": "start", class: "chart-text"
+      }, "0"));
+      chartLabels.appendChild(svgElement("text", {
+        x: left + plotW, y: H - 5, "text-anchor": "end", class: "chart-text-strong"
+      }, formatDurationMinutes(totalHours * 60, true)));
+
+      // SOC de départ et de fin au voisinage des points pour une lecture immédiate.
+      chartLabels.appendChild(svgElement("text", {
+        x: first[0] + 7, y: Math.max(top + 10, first[1] - 7), "text-anchor": "start", class: "chart-text-strong"
+      }, `${startSoc}%`));
+      chartLabels.appendChild(svgElement("text", {
+        x: last[0] - 7, y: Math.max(top + 10, last[1] - 7), "text-anchor": "end", class: "chart-text-strong"
+      }, `${endSoc}%`));
+    }
+
+    function setDefaultStartTime() {
+      chargeStartTime.value = "23:45";
+    }
+
+    function calculate() {
+      const start = Number(startLevel.value);
+      const end = Number(endLevel.value);
+      const chargingPower = Number(power.value);
+      const tariff = getTariff();
+
+      startValue.textContent = start;
+      endValue.textContent = end;
+
+      if (end <= start) {
+        rangeError.style.display = "block";
+        energyResult.textContent = "—";
+        timeResult.textContent = "—";
+        endTimeResult.textContent = "—";
+        costResult.textContent = "—";
+        updateChargeChart(start, end, chargingPower, 0);
+        return;
+      }
+
+      rangeError.style.display = "none";
+
+      const energy = BATTERY * (end - start) / 100;
+      const timeHours = chargingTimeHours(start, end, chargingPower);
+      const timeMinutes = timeHours * 60;
+      const cost = energy * tariff;
+      const startMinutes = timeToMinutes(chargeStartTime.value);
+
+      energyResult.textContent = `${fr(energy, 1)} kWh`;
+      timeResult.textContent = formatDurationMinutes(timeMinutes, true);
+      costResult.textContent = `${fr(cost, 2)} €`;
+      endTimeResult.textContent = startMinutes === null ? "—" : minutesToClock(startMinutes + timeMinutes);
+      updateChargeChart(start, end, chargingPower, timeHours);
+    }
+
+    function calculateClockDuration() {
+      const start = timeToMinutes(durationStart.value);
+      const end = timeToMinutes(durationEnd.value);
+
+      if (start === null || end === null) {
+        durationResult.textContent = "—";
+        return;
+      }
+
+      let delta = end - start;
+      if (delta < 0) delta += 1440;
+      durationResult.textContent = formatDurationMinutes(delta);
+    }
+
+    function openDurationModal() {
+      durationStart.value = chargeStartTime.value || durationStart.value;
+
+      const mainEnd = endTimeResult.textContent.match(/^(\d{2}:\d{2})/);
+      if (mainEnd) durationEnd.value = mainEnd[1];
+
+      calculateClockDuration();
+      durationModal.classList.add("open");
+      document.body.style.overflow = "hidden";
+    }
+
+    function closeDurationModal() {
+      durationModal.classList.remove("open");
+      document.body.style.overflow = "";
+    }
+
+    startLevel.addEventListener("input", calculate);
+    endLevel.addEventListener("input", calculate);
+    power.addEventListener("change", calculate);
+    chargeStartTime.addEventListener("input", calculate);
+    customPrice.addEventListener("input", calculate);
+
+    tariffButtons.forEach(btn => {
+      btn.addEventListener("click", () => {
+        tariffButtons.forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        selectedTariff = btn.dataset.tariff;
+        customWrap.style.display = selectedTariff === "custom" ? "block" : "none";
+        calculate();
+      });
+    });
+
+    chargeChart.addEventListener("pointerdown", event => {
+      if (!chartPlotState) return;
+      activeChartPointer = event.pointerId;
+      showChartScrubberAt(event.clientX);
+    });
+
+    chargeChart.addEventListener("pointermove", event => {
+      if (event.pointerType === "mouse" || event.pointerId === activeChartPointer) {
+        showChartScrubberAt(event.clientX);
+      }
+    });
+
+    chargeChart.addEventListener("pointerenter", event => {
+      if (event.pointerType === "mouse") showChartScrubberAt(event.clientX);
+    });
+
+    chargeChart.addEventListener("pointerleave", event => {
+      if (event.pointerType === "mouse" && activeChartPointer === null) {
+        hideChartScrubber();
+      }
+    });
+
+    window.addEventListener("pointerup", event => {
+      if (event.pointerId === activeChartPointer) activeChartPointer = null;
+    });
+
+    window.addEventListener("pointercancel", event => {
+      if (event.pointerId === activeChartPointer) {
+        activeChartPointer = null;
+        hideChartScrubber();
+      }
+    });
+
+    durationOpen.addEventListener("click", openDurationModal);
+    durationClose.addEventListener("click", closeDurationModal);
+    durationStart.addEventListener("input", calculateClockDuration);
+    durationEnd.addEventListener("input", calculateClockDuration);
+
+    durationModal.addEventListener("click", event => {
+      if (event.target === durationModal) closeDurationModal();
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && durationModal.classList.contains("open")) {
+        closeDurationModal();
+      }
+    });
+
+    setDefaultStartTime();
+    calculate();
+  
+})();
+</script>
+</body></html>
