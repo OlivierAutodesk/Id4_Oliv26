@@ -51,9 +51,15 @@ GitHub Pages sert généralement les sites publiés via `github.io` en HTTPS. Un
 - Onglet Graphes : diagrammes bord à bord, empilés verticalement ; le doigt déplace la lecture de valeurs sur les courbes.
 - Cache du service worker passé en v5 pour déclencher la mise à jour des fichiers mis en cache.
 
-Relance de la publication GitHub Pages
+
 ## Version 6 — relevés datés dans le futur
 - Le graphe « Kilomètres parcourus et cible » affiche maintenant tous les relevés saisis à partir du début du contrat, y compris les dates futures comme celles de 2029.
 - L’axe horizontal est prolongé si un relevé est daté après le 1er juin 2029 ; la trajectoire théorique reste définie jusqu’au terme du contrat, à 45 000 km.
 - La projection à ce jour sur l’accueil continue d’utiliser seulement les relevés datés au plus tard aujourd’hui.
 - Cache du service worker renouvelé afin de favoriser la prise en compte de la mise à jour.
+
+
+## Version 14 — Navigation tactile
+
+- Balayage horizontal sur les pages : droite vers gauche pour passer à l’onglet suivant ; gauche vers droite pour revenir à l’onglet précédent.
+- Les champs, boutons, liens, fenêtres modales et graphiques conservent leurs interactions habituelles.

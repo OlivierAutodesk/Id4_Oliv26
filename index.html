@@ -1067,6 +1067,37 @@ function getStartOdometer(){return Math.max(0,Number(data.startOdometer??0)||0)}
 function load(){try{const x=JSON.parse(localStorage.getItem(STORE)||'{}');data={mileage:Array.isArray(x.mileage)?x.mileage:[],expenses:Array.isArray(x.expenses)?x.expenses:[],startOdometer:Math.max(0,Number.isFinite(Number(x.startOdometer??0))?Number(x.startOdometer??0):0)}}catch(e){data={mileage:[],expenses:[],startOdometer:0}}}
 function save(){localStorage.setItem(STORE,JSON.stringify(data));render()}
 function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));document.querySelectorAll('.tab').forEach(b=>b.classList.toggle('active',b.dataset.page===id));document.body.classList.toggle('charge-active',id==='chargePage');window.scrollTo({top:0,behavior:'auto'});render()}
+// Navigation par balayage tactile : gauche vers droite = onglet précédent,
+// droite vers gauche = onglet suivant. Les contrôles et graphes gardent leurs gestes propres.
+(function setupSwipeNavigation(){
+ const pages=['home','mileage','expenses','chargePage','graphs','history'];
+ const app=document.querySelector('.app');
+ if(!app)return;
+ let start=null;
+ const ignoredSelector='input,select,textarea,button,a,summary,details,.tabs,.chart,#chargeChart,.modal,[role="slider"],[contenteditable="true"]';
+ app.addEventListener('touchstart',e=>{
+   if(e.touches.length!==1){start=null;return}
+   const page=e.target.closest('.page.active');
+   if(!page||e.target.closest(ignoredSelector)||document.querySelector('.modal.open')){start=null;return}
+   const t=e.touches[0];
+   start={x:t.clientX,y:t.clientY,page:page.id,id:t.identifier,time:Date.now()};
+ },{passive:true});
+ app.addEventListener('touchend',e=>{
+   if(!start||e.changedTouches.length!==1){start=null;return}
+   const t=e.changedTouches[0];
+   if(t.identifier!==start.id){start=null;return}
+   const dx=t.clientX-start.x,dy=t.clientY-start.y;
+   const originPage=start.page;start=null;
+   // Ignore taps, vertical scrolling and gestures started on controls.
+   if(Math.abs(dx)<60||Math.abs(dx)<Math.abs(dy)*1.25)return;
+   const current=document.querySelector('.page.active');
+   if(!current||current.id!==originPage)return;
+   const index=pages.indexOf(originPage);
+   const next=index+(dx<0?1:-1);
+   if(next>=0&&next<pages.length)showPage(pages[next]);
+ },{passive:true});
+ app.addEventListener('touchcancel',()=>{start=null},{passive:true});
+})();
 function orderedMileage(){return [...data.mileage].sort((a,b)=>a.date.localeCompare(b.date))}
 function allEntries(){return [...data.mileage.map(x=>({...x,kind:'km',sortDate:x.date})),...data.expenses.map(x=>({...x,kind:'expense',sortDate:x.date}))].sort((a,b)=>b.sortDate.localeCompare(a.sortDate))}
 function totalExpenses(){return data.expenses.reduce((s,x)=>s+Number(x.amount||0),0)}
