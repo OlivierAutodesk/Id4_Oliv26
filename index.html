@@ -842,7 +842,7 @@ body.charge-active #chargePage .charge-app > .chart-card .chart-svg {
   <div class="row"><div class="stat" id="remainingStat"><small>Forfait restant</small><strong id="remaining">45 000 km</strong></div><div class="stat"><small>Rythme moyen cible</small><strong>1 250 <span class="unit">km/mois</span></strong></div></div>
  </div>
  <div class="row"><div class="stat" id="projectionStat"><small>Projection fin de contrat</small><button type="button" id="projectionTap" class="projection-tap" aria-expanded="false" aria-controls="projectionDetail" title="Toucher ou maintenir pour afficher le détail du calcul"><strong id="projection">À calculer</strong></button><small id="projectionHint">Toucher pour le détail du calcul</small></div><div class="stat"><small>Dépenses enregistrées</small><strong id="totalSpend">0,00 €</strong><small>hors loyers</small></div></div><div id="projectionDetail" class="projection-detail panel" hidden aria-live="polite"></div>
- <div class="panel"><div class="sectiontitle"><h2>Coût global estimé</h2><details class="info-pop"><summary aria-label="Informations sur le coût global">i</summary><p>Les dépenses et les loyers sont séparés. Le calcul utilise 36 mensualités de 486,61 €.</p></details></div><div class="row"><div class="stat"><small>Loyers sur 36 mois</small><strong>17 517,96 €</strong></div><div class="stat"><small>Coût enregistré + loyers</small><strong id="grandTotal">17 517,96 €</strong></div></div></div>
+ <div class="panel"><div class="sectiontitle"><h2>Coût global estimé</h2><details class="info-pop"><summary aria-label="Informations sur le coût global">i</summary><p>Les loyers sur 36 mois correspondent au contrat complet. Le coût loyer actuel additionne les mensualités dont l’échéance est passée à la date du jour (échéance le 1er de chaque mois). Les dépenses enregistrées sont ajoutées séparément.</p></details></div><div class="row"><div class="stat"><small>Loyers sur 36 mois</small><strong>17 517,96 €</strong></div><div class="stat"><small>Coût enregistré + loyers</small><strong id="grandTotal">17 517,96 €</strong></div></div><div class="row" style="margin-top:8px"><div class="stat"><small>Coût loyer actuel</small><strong id="currentRentTotal">0,00 €</strong><small id="currentRentCount">0 mensualité payée</small></div><div class="stat"><small>Coût loyer actuel + dépense</small><strong id="currentRentPlusExpenses">0,00 €</strong><small>Loyers payés + dépenses enregistrées</small></div></div></div>
 </section>
 
 <section id="mileage" class="page">
@@ -1070,6 +1070,16 @@ function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.
 function orderedMileage(){return [...data.mileage].sort((a,b)=>a.date.localeCompare(b.date))}
 function allEntries(){return [...data.mileage.map(x=>({...x,kind:'km',sortDate:x.date})),...data.expenses.map(x=>({...x,kind:'expense',sortDate:x.date}))].sort((a,b)=>b.sortDate.localeCompare(a.sortDate))}
 function totalExpenses(){return data.expenses.reduce((s,x)=>s+Number(x.amount||0),0)}
+function paidRentInstallments(asOf=today()){
+ // Les loyers sont considérés payés à chaque échéance mensuelle du 1er, du début du contrat à la date demandée.
+ if(asOf<CONTRACT.start)return 0;
+ const [sy,sm,sd]=CONTRACT.start.split('-').map(Number);
+ const [y,m,d]=asOf.split('-').map(Number);
+ let count=(y-sy)*12+(m-sm);
+ if(d<sd)count--;
+ return Math.max(0,Math.min(CONTRACT.months,count+1));
+}
+function currentRentCost(asOf=today()){return paidRentInstallments(asOf)*CONTRACT.monthly}
 function entryHTML(x,withDelete=true){let title=x.kind==='km'?'Relevé compteur':x.type;let detail=x.kind==='km'?`${fmt(x.value)} km${x.note?' · '+esc(x.note):''}`:`${x.place?esc(x.place)+' · ':''}${x.kwh?esc(x.kwh)+' kWh · ':''}${x.note?esc(x.note):''}`;let amount=x.kind==='km'?'':`<div class="amount">${eur(x.amount)}</div>`;return `<div class="entry"><div class="entryhead"><div><strong>${title}</strong><div class="muted" style="font-size:12px;margin-top:4px">${dateFmt(x.date)}</div><div style="font-size:13px;margin-top:5px">${detail}</div></div><div>${amount}${withDelete?`<button class="danger smallbtn" style="margin-top:7px" onclick="deleteEntry('${x.kind}','${x.id}')">Supprimer</button>`:''}</div></div></div>`}
 function esc(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
 function chartMileageItems(items){
@@ -1300,7 +1310,7 @@ function render(){
  }
  if(!$('projectionDetail').hidden)$('projectionDetail').innerHTML=projectionDetailHTML(calc);
  if(document.activeElement!==$('startOdoValue'))$('startOdoValue').value=String(getStartOdometer());
- const total=totalExpenses();$('totalSpend').textContent=eur(total);$('grandTotal').textContent=eur(CONTRACT.monthly*CONTRACT.months+total);
+ const total=totalExpenses(),installmentsPaid=paidRentInstallments(),rentPaid=currentRentCost();$('totalSpend').textContent=eur(total);$('grandTotal').textContent=eur(CONTRACT.monthly*CONTRACT.months+total);$('currentRentTotal').textContent=eur(rentPaid);$('currentRentCount').textContent=`${installmentsPaid} ${installmentsPaid===1?'mensualité payée':'mensualités payées'}`;$('currentRentPlusExpenses').textContent=eur(rentPaid+total);
  const charges=data.expenses.filter(x=>x.type.startsWith('Recharge'));const chargeSum=charges.reduce((s,x)=>s+Number(x.amount||0),0);const other=total-chargeSum;const kwh=charges.reduce((s,x)=>s+Number(x.kwh||0),0);
  $('chargeTotal').textContent=eur(chargeSum);$('otherTotal').textContent=eur(other);$('totalKwh').textContent=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:1}).format(kwh)+' kWh';$('avgKwh').textContent=kwh?eur(chargeSum/kwh)+'/kWh':'—';
  const entries=allEntries(),filter=$('historyFilter')?.value||'all';
