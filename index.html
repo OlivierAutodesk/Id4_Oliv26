@@ -835,6 +835,11 @@ body.charge-active #chargePage .charge-app > .chart-card .chart-svg {
 .date-label-row label { min-width:0; }
 .today-btn { flex:0 0 auto; min-height:27px; padding:4px 7px; font-size:10px; line-height:1.1; border-radius:8px; }
 .remaining-mood { width:100%; text-align:center; font-size:58px; line-height:1.05; padding-top:5px; }
+/* Compteur et ratios sur une seule ligne, avec les pourcentages en plus petit. */
+.current-km-line{display:flex;align-items:baseline;flex-wrap:nowrap;white-space:nowrap;gap:4px;min-width:0;max-width:100%;font-size:clamp(18px,5.2vw,28px);letter-spacing:-.7px;line-height:1.2;overflow:visible}
+.current-km-line .current-km-value{flex:0 0 auto}
+.current-km-line .current-km-unit{font-size:clamp(10px,2.8vw,14px);letter-spacing:0;flex:0 0 auto}
+.current-km-line .current-km-ratios{font-size:clamp(9px,2.35vw,11px);font-weight:650;letter-spacing:0;color:var(--muted);flex:0 0 auto}
 #home .stat #monthlySpendAverage { display:block; margin-top:4px; font-size:10px; line-height:1.2; }
 #home .stat #currentRentPlusExpenses { font-size:16px; }
 .history-summary { margin:0 0 10px; padding:8px 10px; border-radius:10px; background:#eef2ff; color:#3448a5; font-size:12px; line-height:1.4; font-weight:700; }
@@ -851,7 +856,7 @@ body.charge-active #chargePage .charge-app > .chart-card .chart-svg {
 <main>
 <section id="home" class="page active">
  <div class="panel hero">
-  <div class="label">Compteur au dernier relevé</div><div class="big" id="currentKm">— <span class="unit">km</span></div>
+  <div class="label">Compteur au dernier relevé</div><div class="big current-km-line" id="currentKm">— <span class="unit current-km-unit">km / 45 000 km</span><span class="current-km-ratios">(— % km · — % j)</span></div>
   <div id="kmStatus" class="status">Ajoute ton premier relevé</div>
   <div class="progress"><div class="bar" id="kmBar"></div></div>
   <div class="row"><div class="stat" id="remainingStat"><small>Forfait restant</small><strong id="remaining">45 000 km</strong></div><div class="stat"><small>Rythme moyen cible</small><strong>1 250 <span class="unit">km/mois</span></strong></div></div>
@@ -1077,6 +1082,7 @@ const dateFmt=s=>new Date(s+'T12:00:00').toLocaleDateString('fr-FR',{day:'2-digi
 const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`};
 const day=s=>Date.parse(s+'T00:00:00Z')/86400000;
 const fmt1=n=>new Intl.NumberFormat('fr-FR',{maximumFractionDigits:1,minimumFractionDigits:0}).format(n);
+const fmt2=n=>new Intl.NumberFormat('fr-FR',{minimumFractionDigits:2,maximumFractionDigits:2}).format(n);
 const monthFmt=m=>{const [y,mo]=m.split('-').map(Number);return new Date(y,mo-1,1).toLocaleDateString('fr-FR',{month:'long',year:'numeric'})};
 function getStartOdometer(){return Math.max(0,Number(data.startOdometer??0)||0)}
 function load(){try{const x=JSON.parse(localStorage.getItem(STORE)||'{}');data={mileage:Array.isArray(x.mileage)?x.mileage:[],expenses:Array.isArray(x.expenses)?x.expenses:[],startOdometer:Math.max(0,Number.isFinite(Number(x.startOdometer??0))?Number(x.startOdometer??0):0)}}catch(e){data={mileage:[],expenses:[],startOdometer:0}}}
@@ -1358,7 +1364,10 @@ let lastProjectionCalc=null,projectionHoldTimer=null,projectionLongPress=false;
 function setupProjectionTap(){const tap=$('projectionTap');tap.addEventListener('pointerdown',()=>{projectionLongPress=false;clearTimeout(projectionHoldTimer);projectionHoldTimer=setTimeout(()=>{projectionLongPress=true;setProjectionDetails(true)},450)});['pointerup','pointerleave','pointercancel'].forEach(ev=>tap.addEventListener(ev,()=>clearTimeout(projectionHoldTimer)));tap.addEventListener('click',()=>{if(projectionLongPress){projectionLongPress=false;return}setProjectionDetails($('projectionDetail').hidden)});tap.addEventListener('keydown',e=>{if(e.key==='Escape')setProjectionDetails(false)});}
 function render(){
  const ms=orderedMileage(),calc=calculateProjection(ms,true),last=calc.lastRecorded,km=last?Number(last.value):null,driven=last?calc.lastRecordedDriven:0,remaining=CONTRACT.km-driven;
- $('currentKm').innerHTML=km===null?'— <span class="unit">km</span>':`${fmt(km)} <span class="unit">km</span>`;
+ const contractDays=Math.max(1,day(CONTRACT.end)-day(CONTRACT.start));
+ const elapsedPercent=Math.max(0,Math.min(1,(day(today())-day(CONTRACT.start))/contractDays))*100;
+ const kmPercent=km===null?null:km/CONTRACT.km*100;
+ $('currentKm').innerHTML=`<span class="current-km-value">${km===null?'—':fmt(km)}</span><span class="unit current-km-unit">km / ${fmt(CONTRACT.km)} km</span><span class="current-km-ratios">(${kmPercent===null?'—':fmt2(kmPercent)} % km · ${fmt2(elapsedPercent)} % j)</span>`;
  $('remaining').textContent=`${fmt(Math.max(0,remaining))} km`;
  $('remainingStat').classList.toggle('limit-ok',remaining>0); $('remainingStat').classList.toggle('limit-bad',remaining<=0);
  $('kmBar').style.width=Math.max(0,Math.min(100,driven/CONTRACT.km*100))+'%'; $('historyStartOdo').textContent=`${fmt(getStartOdometer())} km`;

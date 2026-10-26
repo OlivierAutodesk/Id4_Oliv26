@@ -1,4 +1,4 @@
-const CACHE='id4-lld-cache-v20';
+const CACHE='id4-lld-cache-v21';
 const FILES=['./','./index.html','./manifest.webmanifest','./icon-512.png','./apple-touch-icon.png'];
 self.addEventListener('install',event=>event.waitUntil((async()=>{
   const cache=await caches.open(CACHE);
