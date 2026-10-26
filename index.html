@@ -826,6 +826,21 @@ body.charge-active #chargePage .charge-app > .chart-card .chart-svg {
     padding-right: 0;
   }
 }
+
+/* Ajustements version 16 */
+#mileage .formgrid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+#mileage .field, #mileage input, #mileage select { min-width: 0; }
+#mileage input[type="date"] { width: 100%; max-width: 100%; min-width: 0; }
+.date-label-row { display:flex; align-items:center; justify-content:space-between; gap:4px; min-width:0; }
+.date-label-row label { min-width:0; }
+.today-btn { flex:0 0 auto; min-height:27px; padding:4px 7px; font-size:10px; line-height:1.1; border-radius:8px; }
+.remaining-mood { width:100%; text-align:center; font-size:58px; line-height:1.05; padding-top:5px; }
+#home .stat #monthlySpendAverage { display:block; margin-top:4px; font-size:10px; line-height:1.2; }
+#home .stat #currentRentPlusExpenses { font-size:16px; }
+.history-summary { margin:0 0 10px; padding:8px 10px; border-radius:10px; background:#eef2ff; color:#3448a5; font-size:12px; line-height:1.4; font-weight:700; }
+/* Aligne verticalement les champs associés à la ligne Date + Aujourd’hui. */
+#mileage label[for="kmValue"], #expenses label[for="expType"] { min-height:27px; display:flex; align-items:center; }
+@media(max-width:350px) { .today-btn { padding:4px 5px; font-size:9px; } }
 </style>
 
 </head>
@@ -841,13 +856,13 @@ body.charge-active #chargePage .charge-app > .chart-card .chart-svg {
   <div class="progress"><div class="bar" id="kmBar"></div></div>
   <div class="row"><div class="stat" id="remainingStat"><small>Forfait restant</small><strong id="remaining">45 000 km</strong></div><div class="stat"><small>Rythme moyen cible</small><strong>1 250 <span class="unit">km/mois</span></strong></div></div>
  </div>
- <div class="row"><div class="stat" id="projectionStat"><small>Projection fin de contrat</small><button type="button" id="projectionTap" class="projection-tap" aria-expanded="false" aria-controls="projectionDetail" title="Toucher ou maintenir pour afficher le détail du calcul"><strong id="projection">À calculer</strong></button><small id="projectionHint">Toucher pour le détail du calcul</small></div><div class="stat"><small>Dépenses enregistrées</small><strong id="totalSpend">0,00 €</strong><small>hors loyers</small></div></div><div id="projectionDetail" class="projection-detail panel" hidden aria-live="polite"></div>
- <div class="panel"><div class="sectiontitle"><h2>Coût global estimé</h2><details class="info-pop"><summary aria-label="Informations sur le coût global">i</summary><p>Les loyers sur 36 mois correspondent au contrat complet. Le coût loyer actuel additionne les mensualités dont l’échéance est passée à la date du jour (échéance le 1er de chaque mois). Les dépenses enregistrées sont ajoutées séparément.</p></details></div><div class="row"><div class="stat"><small>Loyers sur 36 mois</small><strong>17 517,96 €</strong></div><div class="stat"><small>Coût enregistré + loyers</small><strong id="grandTotal">17 517,96 €</strong></div></div><div class="row" style="margin-top:8px"><div class="stat"><small>Coût loyer actuel</small><strong id="currentRentTotal">0,00 €</strong><small id="currentRentCount">0 mensualité payée</small></div><div class="stat"><small>Coût loyer actuel + dépense</small><strong id="currentRentPlusExpenses">0,00 €</strong><small>Loyers payés + dépenses enregistrées</small></div></div></div>
+ <div class="row"><div class="stat" id="projectionStat"><small>Projection fin de contrat</small><button type="button" id="projectionTap" class="projection-tap" aria-expanded="false" aria-controls="projectionDetail" title="Toucher ou maintenir pour afficher le détail du calcul"><strong id="projection">À calculer</strong></button><small id="projectionHint">Toucher pour le détail du calcul</small></div><div class="stat"><small>Dépenses enregistrées</small><strong id="totalSpend">0,00 €</strong><small>hors loyers</small><small id="monthlySpendAverage">Moyenne : 0,00 €/mois</small></div></div><div id="projectionMood" class="remaining-mood" role="img" aria-label="Projection de fin de contrat non disponible">😐</div><div id="projectionDetail" class="projection-detail panel" hidden aria-live="polite"></div>
+ <div class="panel"><div class="sectiontitle"><h2>Coût global estimé</h2><details class="info-pop"><summary aria-label="Informations sur le coût global">i</summary><p>Les loyers sur 36 mois correspondent au contrat complet. Le coût loyer actuel additionne les mensualités dont l’échéance est passée à la date du jour (échéance le 1er de chaque mois). Les dépenses enregistrées sont ajoutées séparément.</p></details></div><div class="row"><div class="stat"><small>Loyers sur 36 mois</small><strong>17 517,96 €</strong></div><div class="stat"><small>Coût enregistré + loyers</small><strong id="grandTotal">17 517,96 €</strong></div></div><div class="row" style="margin-top:8px"><div class="stat"><small>Coût loyer actuel</small><strong id="currentRentTotal">0,00 €</strong><small id="currentRentCount">0 mensualité payée</small></div><div class="stat"><small>Loyer actuel + frais</small><strong id="currentRentPlusExpenses">0,00 €</strong></div></div></div>
 </section>
 
 <section id="mileage" class="page">
  <div class="panel"><div class="sectiontitle"><h2>Ajouter un relevé kilométrique</h2><details class="info-pop"><summary aria-label="Aide sur le relevé kilométrique">i</summary><p>Entre le compteur total affiché au tableau de bord, et non les kilomètres parcourus depuis le dernier relevé. Les relevés sont contrôlés selon leur date.</p></details></div><form id="kmForm"><div class="formgrid">
- <div class="field"><label for="kmDate">Date du relevé</label><input id="kmDate" type="date" required></div>
+ <div class="field"><div class="date-label-row"><label for="kmDate">Date du relevé</label><button type="button" class="secondary smallbtn today-btn" data-date-target="kmDate">Aujourd’hui</button></div><input id="kmDate" type="date" required></div>
  <div class="field"><label for="kmValue">Compteur (km)</label><input id="kmValue" type="number" inputmode="numeric" min="0" step="1" placeholder="Ex. 12500" required></div>
  <div class="field full"><label for="kmNote">Note (facultatif)</label><input id="kmNote" maxlength="120" placeholder="Ex. relevé mensuel"></div>
  </div><button class="primary">Enregistrer le relevé</button></form></div>
@@ -857,7 +872,7 @@ body.charge-active #chargePage .charge-app > .chart-card .chart-svg {
 <section id="expenses" class="page">
  <div class="panel"><h2>Enregistrer une dépense</h2><form id="expenseForm"><div class="formgrid">
  <div class="field"><label for="expType">Catégorie</label><select id="expType"><option value="Recharge domicile">Recharge domicile</option><option value="Recharge publique">Recharge publique</option><option value="Pneus">Pneus</option><option value="Entretien">Entretien</option><option value="Réparation">Réparation</option><option value="Accessoires">Accessoires</option><option value="Autre">Autre</option></select></div>
- <div class="field"><label for="expDate">Date</label><input id="expDate" type="date" required></div>
+ <div class="field"><div class="date-label-row"><label for="expDate">Date</label><button type="button" class="secondary smallbtn today-btn" data-date-target="expDate">Aujourd’hui</button></div><input id="expDate" type="date" required></div>
  <div class="field"><label for="expAmount">Montant (€)</label><input id="expAmount" type="number" inputmode="decimal" min="0" step="0.01" placeholder="0,00" required></div>
  <div class="field"><label for="expKwh">Énergie (kWh, facultatif)</label><input id="expKwh" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Ex. 42,5"></div>
  <div class="field full"><label for="expPlace">Lieu / fournisseur (facultatif)</label><input id="expPlace" maxlength="100" placeholder="Ex. domicile, Ionity…"></div>
@@ -1035,7 +1050,7 @@ body.charge-active #chargePage .charge-app > .chart-card .chart-svg {
 </section>
 
 <section id="history" class="page">
- <div class="panel"><div class="sectiontitle"><h2>Historique complet</h2><button class="secondary smallbtn" onclick="exportData()">Exporter</button></div><div class="field" style="margin:10px 0 12px"><label for="historyFilter">Filtrer l’historique par type</label><select id="historyFilter"><option value="all">Tous les types</option><option value="km">Relevés de compteur</option><option value="expense">Toutes les dépenses</option><option value="Recharge domicile">Recharge domicile</option><option value="Recharge publique">Recharge publique</option><option value="Pneus">Pneus</option><option value="Entretien">Entretien</option><option value="Réparation">Réparation</option><option value="Accessoires">Accessoires</option><option value="Autre">Autre</option></select></div><div id="allEntries" class="empty">Aucune opération enregistrée.</div>
+ <div class="panel"><div class="sectiontitle"><h2>Historique complet</h2><button class="secondary smallbtn" onclick="exportData()">Exporter</button></div><div class="field" style="margin:10px 0 12px"><label for="historyFilter">Filtrer l’historique par type</label><select id="historyFilter"><option value="all">Tous les types</option><option value="km">Relevés de compteur</option><option value="expense">Toutes les dépenses</option><option value="Recharge domicile">Recharge domicile</option><option value="Recharge publique">Recharge publique</option><option value="Pneus">Pneus</option><option value="Entretien">Entretien</option><option value="Réparation">Réparation</option><option value="Accessoires">Accessoires</option><option value="Autre">Autre</option></select></div><div id="historySummary" class="history-summary" aria-live="polite">Aucune opération affichée.</div><div id="allEntries" class="empty">Aucune opération enregistrée.</div>
  <div class="actionrow"><button class="secondary" onclick="document.getElementById('importFile').click()">Importer une sauvegarde</button><button class="danger" onclick="clearData()">Tout effacer</button><input id="importFile" type="file" accept="application/json,.json" hidden></div>
  <p class="notice">Exporte régulièrement une sauvegarde JSON et conserve-la dans Fichiers ou iCloud Drive. Les données sont enregistrées dans le stockage local de ce navigateur et ne se synchronisent pas automatiquement entre appareils.</p></div>
  <div class="panel"><h2>Paramètres du contrat</h2><div class="entry"><span class="muted">Début</span><strong style="float:right">1 juin 2026</strong></div><div class="entry"><span class="muted">Fin</span><strong style="float:right">1 juin 2029</strong></div><div class="entry"><span class="muted">Forfait</span><strong style="float:right">45 000 km</strong></div><div class="entry"><span class="muted">Compteur à la livraison</span><strong id="historyStartOdo" style="float:right">0 km</strong></div><div class="entry"><span class="muted">Loyer mensuel</span><strong style="float:right">486,61 €</strong></div></div>
@@ -1356,20 +1371,26 @@ function render(){
  lastProjectionCalc=calc;
  if(calc.last&&calc.pace!==null){
   $('projection').textContent=fmt(Math.round(calc.projected))+' km';
-  $('projectionHint').textContent=`Fourchette : ${fmt(Math.round(calc.low))}–${fmt(Math.round(calc.high))} km · ${calc.projected>=CONTRACT.km?'dépassement estimé '+fmt(Math.round(calc.projected-CONTRACT.km))+' km':'marge estimée '+fmt(Math.round(CONTRACT.km-calc.projected))+' km'}`;
+  const projectionMood=$('projectionMood');
+  if(calc.projected<42000){projectionMood.textContent='😄';projectionMood.setAttribute('aria-label','Projection favorable : moins de 42 000 km');}
+  else if(calc.projected<=45000){projectionMood.textContent='😐';projectionMood.setAttribute('aria-label','Projection intermédiaire : entre 42 000 et 45 000 km');}
+  else{projectionMood.textContent='😢';projectionMood.setAttribute('aria-label','Projection supérieure au forfait : plus de 45 000 km');}
+  $('projectionHint').textContent=calc.projected>=CONTRACT.km?'Dépassement estimé : '+fmt(Math.round(calc.projected-CONTRACT.km))+' km':'Marge estimée : '+fmt(Math.round(CONTRACT.km-calc.projected))+' km';
   $('projectionStat').classList.toggle('limit-ok',calc.projected<CONTRACT.km); $('projectionStat').classList.toggle('limit-bad',calc.projected>=CONTRACT.km);
  } else {
   $('projection').textContent='À calculer';$('projectionHint').textContent='Toucher pour le détail du calcul';
+  $('projectionMood').textContent='😐';$('projectionMood').setAttribute('aria-label','Projection de fin de contrat non disponible');
   $('projectionStat').classList.remove('limit-ok','limit-bad');
  }
  if(!$('projectionDetail').hidden)$('projectionDetail').innerHTML=projectionDetailHTML(calc);
  if(document.activeElement!==$('startOdoValue'))$('startOdoValue').value=String(getStartOdometer());
- const total=totalExpenses(),installmentsPaid=paidRentInstallments(),rentPaid=currentRentCost();$('totalSpend').textContent=eur(total);$('grandTotal').textContent=eur(CONTRACT.monthly*CONTRACT.months+total);$('currentRentTotal').textContent=eur(rentPaid);$('currentRentCount').textContent=`${installmentsPaid} ${installmentsPaid===1?'mensualité payée':'mensualités payées'}`;$('currentRentPlusExpenses').textContent=eur(rentPaid+total);
+ const total=totalExpenses(),installmentsPaid=paidRentInstallments(),rentPaid=currentRentCost();$('totalSpend').textContent=eur(total);$('monthlySpendAverage').textContent=`Moyenne : ${eur(total/Math.max(1,installmentsPaid))}/mois`;$('grandTotal').textContent=eur(CONTRACT.monthly*CONTRACT.months+total);$('currentRentTotal').textContent=eur(rentPaid);$('currentRentCount').textContent=`${installmentsPaid} ${installmentsPaid===1?'mensualité payée':'mensualités payées'}`;$('currentRentPlusExpenses').textContent=eur(rentPaid+total);
  const charges=data.expenses.filter(x=>x.type.startsWith('Recharge'));const chargeSum=charges.reduce((s,x)=>s+Number(x.amount||0),0);const other=total-chargeSum;const kwh=charges.reduce((s,x)=>s+Number(x.kwh||0),0);
  $('chargeTotal').textContent=eur(chargeSum);$('otherTotal').textContent=eur(other);$('totalKwh').textContent=new Intl.NumberFormat('fr-FR',{maximumFractionDigits:1}).format(kwh)+' kWh';$('avgKwh').textContent=kwh?eur(chargeSum/kwh)+'/kWh':'—';
  const entries=allEntries(),filter=$('historyFilter')?.value||'all';
  const filtered=entries.filter(x=>filter==='all'||(filter==='km'&&x.kind==='km')||(filter==='expense'&&x.kind==='expense')||(x.kind==='expense'&&x.type===filter));
  $('allEntries').innerHTML=filtered.length?filtered.map(x=>entryHTML(x)).join(''):(entries.length?'<div class="empty">Aucune entrée ne correspond à ce filtre.</div>':'<div class="empty">Aucune opération enregistrée.</div>');
+ const historySummary=$('historySummary'); const expenseFiltered=filtered.filter(x=>x.kind==='expense'); const kmFiltered=filtered.filter(x=>x.kind==='km'); const expenseAmount=expenseFiltered.reduce((s,x)=>s+Number(x.amount||0),0); const kmAmount=kmFiltered.reduce((s,x)=>s+Number(x.value||0),0); if(!filtered.length)historySummary.textContent='Aucune opération affichée.'; else if(filter==='km')historySummary.textContent=`${kmFiltered.length} relevé${kmFiltered.length>1?'s':''} affiché${kmFiltered.length>1?'s':''} · somme des compteurs : ${fmt(kmAmount)} km`; else if(filter==='all')historySummary.textContent=`${filtered.length} opération${filtered.length>1?'s':''} affichée${filtered.length>1?'s':''} · dépenses cumulées : ${eur(expenseAmount)}${kmFiltered.length?` · ${kmFiltered.length} relevé${kmFiltered.length>1?'s':''} de compteur`:''}`; else historySummary.textContent=`${expenseFiltered.length} dépense${expenseFiltered.length>1?'s':''} affichée${expenseFiltered.length>1?'s':''} · total : ${eur(expenseAmount)}`;
  renderCharts();
 }
 $('startOdoForm').addEventListener('submit',e=>{e.preventDefault();const value=Number($('startOdoValue').value);if(!Number.isFinite(value)||value<0||!Number.isInteger(value)){alert('Saisis un kilométrage initial entier et positif.');return}const active=orderedMileage().filter(x=>x.date>=CONTRACT.start&&x.date<=CONTRACT.end);if(active.some(x=>Number(x.value)<value)){alert('Le compteur initial ne peut pas dépasser un relevé déjà saisi pendant le contrat. Corrige ce relevé ou vérifie le compteur à la livraison.');return}data.startOdometer=value;save();alert('Compteur initial enregistré. Le calcul du forfait et les graphes ont été actualisés.');});
@@ -1379,7 +1400,7 @@ function deleteEntry(kind,id){if(!confirm('Supprimer définitivement cette entr�
 function exportData(){const blob=new Blob([JSON.stringify({version:1,contract:CONTRACT,...data},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='sauvegarde-id4-lld-'+today()+'.json';a.click();URL.revokeObjectURL(a.href)}
 $('importFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!Array.isArray(x.mileage)||!Array.isArray(x.expenses))throw Error();if(!confirm('Remplacer les données actuelles par celles de cette sauvegarde ?'))return;data={mileage:x.mileage,expenses:x.expenses,startOdometer:Math.max(0,Number(x.startOdometer)||0)};save();alert('Sauvegarde importée.')}catch(err){alert('Fichier de sauvegarde invalide.')}e.target.value=''});
 function clearData(){if(confirm('Effacer tous les relevés et toutes les dépenses de cet appareil ? Pense à exporter une sauvegarde avant.')){data={mileage:[],expenses:[],startOdometer:0};save()}}
-$('kmDate').value=today();$('expDate').value=today();$('historyFilter').addEventListener('change',render);setupProjectionTap();
+$('kmDate').value=today();$('expDate').value=today();document.querySelectorAll('.today-btn').forEach(btn=>btn.addEventListener('click',()=>{const input=$(btn.dataset.dateTarget);if(input)input.value=today()}));$('historyFilter').addEventListener('change',render);setupProjectionTap();
 load();render();
 if('serviceWorker' in navigator && location.protocol.startsWith('http')) navigator.serviceWorker.register('./sw.js').catch(()=>{});
 </script>

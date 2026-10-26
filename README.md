@@ -1,4 +1,4 @@
-# ID.4 — Suivi LLD (iPhone 15)
+# ID.4 — Suivi LLD (iPhone 15) — version 17
 
 Application web mobile autonome pour suivre le forfait kilométrique et les dépenses d'une Volkswagen ID.4 en LLD, avec une estimation mixte et des graphes tactiles.
 
@@ -63,5 +63,3 @@ GitHub Pages sert généralement les sites publiés via `github.io` en HTTPS. Un
 
 - Balayage horizontal sur les pages : droite vers gauche pour passer à l’onglet suivant ; gauche vers droite pour revenir à l’onglet précédent.
 - Les champs, boutons, liens, fenêtres modales et graphiques conservent leurs interactions habituelles.
-
-- Relance
